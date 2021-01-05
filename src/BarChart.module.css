@@ -1,0 +1,22 @@
+.box {
+  position: relative;
+  left: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: 0 0 10px 0 rgba(150, 150, 150, 0.3);
+  border-radius: 4px;
+  padding: 30px;
+  background-color: #512da8;
+  margin: 10px;
+  width: 50vw;
+  height: 40vh;
+}
+
+.chart {
+  flex: 1;
+  overflow-x: auto;
+  width: 100%;
+  height: 100%;
+}

@@ -1,0 +1,32 @@
+.box {
+  display: flex;
+  justify-content: center;
+  box-shadow: 0 0 10px 0 rgba(150, 150, 150, 0.3);
+  border-radius: 4px;
+  padding: 10px;
+  background-color: white;
+  margin: 10px;
+}
+
+.filterSection {
+  display: flex;
+  width: auto;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.columnBox {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.datePickerSection {
+  flex: 0.5;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: auto;
+  min-height: 70px;
+}
