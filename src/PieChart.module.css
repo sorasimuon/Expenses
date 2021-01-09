@@ -1,16 +1,23 @@
-.box {
-  position: relative;
-  left: 0;
-  top: 0;
+/* .box {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  align-items: center;
-  box-shadow: 0 0 10px 0 rgba(150, 150, 150, 0.3);
+  align-items: flex-start;
+  box-shadow: 0 0 20px 0 rgba(50, 50, 50, 0.7);
   border-radius: 4px;
   padding: 30px;
   background-color: #283593;
-  margin: 10px;
-  width: 50vw;
+} */
+/* .box {
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 20px 0 rgba(50, 50, 50, 0.7);
+  border-radius: 4px;
+  padding: 30px;
+  background-color: rgb(82, 45, 169);
   height: 40vh;
+} */
+canvas {
+  width: 100% !important;
+  height: 100% !important;
 }

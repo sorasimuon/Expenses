@@ -14,12 +14,17 @@ import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import { CenterFocusStrong, FullscreenExit } from "@material-ui/icons";
-import IconButton from "@material-ui/core/IconButton";
+import Button from "@material-ui/core/Button";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
 import AddIcon from "@material-ui/icons/Add";
-import { teal, grey, deepOrange } from "@material-ui/core/colors";
+import {
+  teal,
+  grey,
+  deepOrange,
+  indigo,
+  deepPurple,
+} from "@material-ui/core/colors";
 import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -32,20 +37,27 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
   },
   newExpenseButton: {
-    width: 70,
-    height: 70,
-    "&:active": {
-      border: "none",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: deepPurple["A700"],
+    boxShadow: "0 0 10px 0 rgba(150, 150, 150, 0.3)",
+    color: "white",
+    fontWeight: "bold",
+    borderRadius: "4px",
+    padding: 10,
+    "&:hover": {
+      backgroundColor: deepPurple[300],
     },
-    "&:visited": {},
+    "&:focus": {
+      outline: "none",
+    },
   },
   newExpenseIcon: {
-    color: teal[600],
-    width: 70,
-    height: 70,
-    "&:hover": {
-      color: teal[300],
-    },
+    marginRight: theme.spacing(1),
+    color: "white",
+    height: 32,
+    width: 32,
   },
   paper: {
     display: "flex",
@@ -73,7 +85,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: teal[500],
     color: "white",
     justifySelf: "end",
-    borderRadius: "50vh",
+    borderRadius: "4px",
     "&:hover": {
       backgroundColor: teal[800],
     },
@@ -81,7 +93,7 @@ const useStyles = makeStyles((theme) => ({
   cancelButton: {
     color: grey[500],
     justifySelf: "end",
-    borderRadius: "50vh",
+    borderRadius: "4px",
     "&:hover": {
       color: grey[800],
     },
@@ -95,11 +107,10 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: "50vh",
+    borderRadius: "4px",
     color: "white",
     backgroundColor: deepOrange[500],
     height: "auto",
-    padding: "0 0 0 0",
     "&:hover": {
       backgroundColor: deepOrange[300],
     },
@@ -116,6 +127,18 @@ const useStyles = makeStyles((theme) => ({
   alignLeft: {
     justifySelf: "flex-start",
     alignSelf: "flex-start",
+  },
+  categoryContainer: {
+    display: "flex",
+    flexWrap: "wrap",
+    marginTop: 10,
+  },
+  category: {
+    backgroundColor: indigo[300],
+    padding: 4,
+    color: "white",
+    borderRadius: 4,
+    margin: 4,
   },
 }));
 
@@ -218,7 +241,7 @@ function WalletNewExpense() {
       dispatch(changeAlertAdd("error"));
     }
 
-    setOpen(false);
+    handleClose();
   };
 
   useEffect(() => {
@@ -226,10 +249,11 @@ function WalletNewExpense() {
   }, [categoryList]);
 
   return (
-    <div>
-      <IconButton className={classes.newExpenseButton} onClick={handleOpen}>
+    <React.Fragment>
+      <Button className={classes.newExpenseButton} onClick={handleOpen}>
         <AddCircleIcon className={classes.newExpenseIcon} />
-      </IconButton>
+        NEW EXPENSE
+      </Button>
       <Modal
         aria-labelledby="Modal-create-new-expense"
         aria-describedby="Modal-create-new-expense"
@@ -263,30 +287,37 @@ function WalletNewExpense() {
                   shrink: true,
                 }}
               />
-              <TextField
-                select
-                type="text"
-                label="Category"
-                className={classes.textField}
-                value={category ? category : listCategory[0]}
-                onChange={(e) => setCategory(e.target.value)}
-              >
-                {listCategory.map((cat) => (
-                  <MenuItem key={cat} value={cat}>
-                    {cat}
-                  </MenuItem>
+              <div className={classes.rowBox}>
+                <TextField
+                  select
+                  type="text"
+                  label="Category"
+                  className={classes.textField}
+                  style={{ marginRight: 10, marginBottom: 0 }}
+                  value={category ? category : listCategory[0]}
+                  onChange={(e) => setCategory(e.target.value)}
+                >
+                  {listCategory.map((cat) => (
+                    <MenuItem key={cat} value={cat}>
+                      {cat}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <Button
+                  className={`${classes.addCategoryButton} ${classes.alignRight}`}
+                  onClick={() => handleCategory(category)}
+                >
+                  <AddIcon />
+                  Add
+                </Button>
+              </div>
+              <div className={classes.categoryContainer}>
+                {categoryList.map((category) => (
+                  <p key={uuidv4()} className={classes.category}>
+                    {category}
+                  </p>
                 ))}
-              </TextField>
-              <Button
-                className={`${classes.addCategoryButton} ${classes.alignRight}`}
-                onClick={() => handleCategory(category)}
-              >
-                <AddIcon />
-                Add
-              </Button>
-              {categoryList.map((category) => (
-                <p key={uuidv4()}>{category}</p>
-              ))}
+              </div>
 
               <TextField
                 required
@@ -351,7 +382,7 @@ function WalletNewExpense() {
                   type="submit"
                   onClick={(e) => addNewExpense(e)}
                 >
-                  <AddIcon />
+                  <AddIcon className={classes.newExpenseIcon} />
                   ADD NEW EXPENSE
                 </Button>
               </div>
@@ -359,7 +390,7 @@ function WalletNewExpense() {
           </div>
         </Fade>
       </Modal>
-    </div>
+    </React.Fragment>
   );
 }
 

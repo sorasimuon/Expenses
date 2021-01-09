@@ -11,25 +11,23 @@ import {
 import WalletNewExpense from "./WalletNewExpense";
 
 // Styling import
-import styles from "./WalletFilter.module.css";
+import styles from "./WalletTimeFilter.module.css";
 import { makeStyles } from "@material-ui/core";
 
 import TextField from "@material-ui/core/TextField";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import Button from "@material-ui/core/Button";
-import { teal, grey } from "@material-ui/core/colors";
+import { teal, grey, lightBlue } from "@material-ui/core/colors";
 import RefreshIcon from "@material-ui/icons/Refresh";
 
 const useStyles = makeStyles((theme) => ({
   datePicker: {
     width: 200,
+    alignSelf: "center",
   },
   dateRangeButton: {
     fontWeight: "bold",
     color: grey[600],
-  },
-  grow: {
-    flexGrow: 1,
   },
   refreshButton: {
     display: "flex",
@@ -37,11 +35,14 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     backgroundColor: teal[500],
     color: "white",
-    borderRadius: "100vh",
+    borderRadius: "4px",
     padding: 10,
     marginLeft: 20,
     "&:hover": {
       backgroundColor: teal[300],
+    },
+    "&:focus": {
+      outline: "none",
     },
   },
   refreshIcon: {
@@ -49,9 +50,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function WalletFilter() {
+const useStylesTextField = makeStyles((theme) => ({
+  root: {
+    color: teal[300],
+    outline: "none",
+    [theme.breakpoints.down(380)]: {
+      fontSize: 10,
+    },
+    "&$focused": {
+      color: lightBlue[300],
+      borderBottomColor: teal[300],
+    },
+  },
+  focused: {},
+}));
+
+function WalletTimeFilter() {
   // Styling function
   const classes = useStyles();
+  const classesTextField = useStylesTextField();
 
   // useRef variables
   const dateFromRef = useRef(null);
@@ -103,48 +120,34 @@ function WalletFilter() {
   }, [expenses]);
 
   return (
-    <div className={`${styles.filterSection} ${styles.box}`}>
-      <div className={styles.columnBox}>
-        <div className={styles.datePickerSection}>
-          <TextField
-            inputRef={dateFromRef}
-            label="From"
-            type="date"
-            defaultValue="1970-01-01"
-            className={classes.datePicker}
-          />
-          <TextField
-            inputRef={dateToRef}
-            label="To"
-            type="date"
-            defaultValue="1970-01-01"
-            className={classes.datePicker}
-          />
-        </div>
-        {/* <ButtonGroup
-          variant="text"
-          color="primary"
-          aria-label="text primary button group"
-        >
-          <Button className={classes.dateRangeButton}>1D</Button>
-          <Button className={classes.dateRangeButton}>5D</Button>
-          <Button className={classes.dateRangeButton}>1M</Button>
-          <Button className={classes.dateRangeButton}>6M</Button>
-          <Button className={classes.dateRangeButton}>YTD</Button>
-          <Button className={classes.dateRangeButton}>1Y</Button>
-          <Button className={classes.dateRangeButton}>5Y</Button>
-          <Button className={classes.dateRangeButton}>Max</Button>
-        </ButtonGroup> */}
-      </div>
+    <div className={styles.box}>
+      <TextField
+        inputRef={dateFromRef}
+        label="From"
+        type="date"
+        defaultValue="1970-01-01"
+        InputLabelProps={{
+          classes: classesTextField,
+        }}
+        className={classes.datePicker}
+      />
+      <TextField
+        inputRef={dateToRef}
+        label="To"
+        type="date"
+        defaultValue="1970-01-01"
+        InputLabelProps={{
+          classes: classesTextField,
+        }}
+        className={classes.datePicker}
+      />
+
       <Button className={classes.refreshButton} onClick={(e) => dataRefresh(e)}>
         <RefreshIcon className={classes.refreshIcon} />
         Refresh
       </Button>
-      <div className={classes.grow} />
-
-      <WalletNewExpense />
     </div>
   );
 }
 
-export default WalletFilter;
+export default WalletTimeFilter;

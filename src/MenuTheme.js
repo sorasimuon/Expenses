@@ -29,6 +29,10 @@ const useStyles = makeStyles((theme) => ({
       color: deepOrange[500],
     },
   },
+  gridElement: {
+    gridColumnStart: 1,
+    "&:focus": { outline: "none" },
+  },
   color1: {
     backgroundColor: teal[600],
     margin: 2,
@@ -133,8 +137,10 @@ export default function MenuTheme() {
   }, [open]);
 
   return (
-    <div>
+    <React.Fragment>
       <IconButton
+        className={classes.gridElement}
+        size="small"
         ref={anchorRef}
         aria-controls={open ? "menu-list-grow" : undefined}
         aria-haspopup="true"
@@ -177,6 +183,6 @@ export default function MenuTheme() {
           </Grow>
         )}
       </Popper>
-    </div>
+    </React.Fragment>
   );
 }

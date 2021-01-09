@@ -1,0 +1,5 @@
+.gridSection {
+  display: grid;
+  grid-template-columns: 50px [col1] 50px [col2] 50px [col3];
+  grid-column-gap: 5px;
+}

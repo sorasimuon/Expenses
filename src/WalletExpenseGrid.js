@@ -7,11 +7,18 @@ import moment from "moment";
 import { DataGrid } from "@material-ui/data-grid";
 import { makeStyles } from "@material-ui/core";
 
-const useStyles = (theme) => ({
+const useStyles = makeStyles((theme) => ({
   grid: {
-    overflow: "scroll",
+    overflow: "auto",
+    boxShadow: "0 0 10px 0 rgba(75, 75, 75, 0.5)",
+    gridColumn: "1 / 3",
+    gridRow: "3 / 4",
+    [theme.breakpoints.down(800)]: {
+      gridColumn: "1 / 3",
+      gridRow: "4 / 5",
+    },
   },
-});
+}));
 
 function WalletExpenseGrid() {
   const classes = useStyles();
@@ -55,13 +62,9 @@ function WalletExpenseGrid() {
   // Fulfill column names
 
   return (
-    <DataGrid
-      rows={rows}
-      columns={columns}
-      pageSize={10}
-      checkboxSelection
-      className={classes.grid}
-    />
+    <div className={classes.grid}>
+      <DataGrid rows={rows} columns={columns} pageSize={10} checkboxSelection />
+    </div>
   );
 }
 

@@ -1,18 +1,10 @@
 .box {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   box-shadow: 0 0 10px 0 rgba(150, 150, 150, 0.3);
   border-radius: 4px;
   padding: 10px;
   background-color: white;
-  margin: 10px;
-}
-
-.filterSection {
-  display: flex;
-  width: auto;
-  justify-content: space-between;
-  align-items: center;
 }
 
 .columnBox {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 
-import { Line, Bar } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 import Loader from "./Loader";
 import { useSelector } from "react-redux";
 
@@ -9,27 +9,59 @@ import styles from "./BarChart.module.css";
 import { makeStyles } from "@material-ui/core";
 import classes from "./BarChart.module.css";
 import { blue } from "@material-ui/core/colors";
+import { relativeTimeRounding } from "moment";
+import { ImportantDevices } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
-  chart: {
-    flexGrow: 1,
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
+  // box: {
+  //   position: "relative",
+  //   display: "flex",
+  //   flexDirection: "column",
+  //   justifyContent: "flex-start",
+  //   alignItems: "flex-start",
+  //   boxShadow: "0 0 20px 0 rgba(50, 50, 50, 0.7)",
+  //   borderRadius: 4,
+  //   padding: 30,
+  //   backgroundColor: blue[700],
+  // },
+  box: {
+    display: "grid",
+    gridTemplateColumns: "1fr [col1]",
+    gridTemplateRows: "48px [row1] 1fr [row2]",
+    boxShadow: "0 0 20px 0 rgba(50, 50, 50, 0.7)",
+    borderRadius: 4,
+    padding: 30,
+    backgroundColor: blue[700],
+    [theme.breakpoints.down(800)]: {
+      gridColumn: "1 / 3",
+      gridRow: "2 / 3",
+    },
   },
   title: {
+    gridColumn: "1 / 1",
+    gridrow: "1 / 1",
     color: "white",
     marginBottom: 20,
-    alignSelf: "start",
-    justifySelf: "start",
+  },
+  canvasContainer: {
+    position: "relative",
+    gridColumn: "1 / 1",
+    gridRow: "2 / 3",
+    width: "100%",
+    height: "auto",
+    maxHeight: "400px",
+    [theme.breakpoints.down(800)]: {
+      width: "100%",
+      height: "auto",
+      maxHeight: "312px",
+    },
   },
 }));
 
 function BarChart() {
   const classes = useStyles();
   const [data, setData] = useState();
-  const [options, setOptions] = useState();
+  // const [options, setOptions] = useState();
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -39,6 +71,67 @@ function BarChart() {
   // Selector
   let subExpenses = useSelector((state) => state.expenses.subExpenses);
 
+  //Define Options
+  const [options, setOptions] = useState({
+    maintainAspectRatio: false,
+    responsive: true,
+    scales: {
+      yAxes: [
+        {
+          ticks: {
+            beginAtZero: true,
+            autoSkip: true,
+            maxTicksLimit: 10,
+            fontColor: "white",
+          },
+          gridLines: {
+            display: true,
+            color: "rgba(255,255,255,.3)",
+          },
+          scaleLabel: {
+            display: true,
+            labelString: "Amount per day",
+            fontColor: "rgb(255,255,255)",
+          },
+        },
+      ],
+      xAxes: [
+        {
+          gridLines: {
+            display: true,
+            color: "rgba(255,255,255,.3)",
+          },
+          type: "time",
+          ticks: {
+            autoSkip: true,
+            maxTicksLimit: 10,
+            fontColor: "white",
+          },
+          time: {
+            displayFormats: {
+              day: "MMM D",
+            },
+          },
+          scaleLabel: {
+            display: true,
+            labelString: "Date",
+            fontColor: "rgb(255,255,255)",
+          },
+          distribution: "linear",
+        },
+      ],
+    },
+    legend: {
+      display: true,
+      position: "bottom",
+      labels: {
+        fontColor: "white",
+        fontSize: 16,
+      },
+    },
+  });
+
+  // Functions
   const consolidateData = (arr) => {
     let consolidated_arr = [];
     let tempObj = {};
@@ -79,66 +172,6 @@ function BarChart() {
       ],
     });
 
-    setOptions({
-      maintainAspectRatio: false,
-      scales: {
-        yAxes: [
-          {
-            ticks: {
-              beginAtZero: true,
-              autoSkip: true,
-              maxTicksLimit: 10,
-              fontColor: "white",
-            },
-            gridLines: {
-              display: true,
-              color: "rgba(255,255,255,.3)",
-            },
-            scaleLabel: {
-              display: true,
-              labelString: "Amount per day",
-              fontColor: "rgb(255,255,255)",
-            },
-          },
-        ],
-        xAxes: [
-          {
-            gridLines: {
-              display: true,
-              color: "rgba(255,255,255,.3)",
-            },
-            type: "time",
-            ticks: {
-              autoSkip: true,
-              maxTicksLimit: 10,
-              fontColor: "white",
-            },
-            time: {
-              displayFormats: {
-                day: "MMM D",
-              },
-            },
-            scaleLabel: {
-              display: true,
-              labelString: "Date",
-              fontColor: "rgb(255,255,255)",
-            },
-            distribution: "linear",
-          },
-        ],
-      },
-      responsive: true,
-      maintainAspectRatio: false,
-      legend: {
-        display: true,
-        position: "bottom",
-        labels: {
-          fontColor: "white",
-          fontSize: 16,
-        },
-      },
-    });
-
     setIsLoading(false);
   }, [subExpenses]);
 
@@ -147,14 +180,13 @@ function BarChart() {
   }
 
   return (
-    <div className={styles.box}>
+    <div className={classes.box}>
       <h1 className={classes.title}>Daily Chart</h1>
-      <div className={styles.chart}>
+      <div className={classes.canvasContainer}>
         <Bar data={data} options={options} />
       </div>
     </div>
   );
-  // return <div ref={ExpenseChartRef} id="chart"></div>;
 }
 
 export default BarChart;

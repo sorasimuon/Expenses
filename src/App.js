@@ -6,6 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Login from "./Login";
 import SignUp from "./SignUp";
 import Wallet from "./Wallet";
+import BarChart from "./BarChart";
 
 function App() {
   return (
@@ -19,6 +20,9 @@ function App() {
         </Route>
         <Route path="/wallet">
           <Wallet />
+        </Route>
+        <Route path="/test">
+          <BarChart />
         </Route>
         <Route path="/">
           <Login />

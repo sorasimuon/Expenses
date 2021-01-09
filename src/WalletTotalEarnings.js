@@ -9,28 +9,34 @@ import MonetizationOnIcon from "@material-ui/icons/MonetizationOn";
 
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    boxShadow: "0 0 10px 0 rgba(150, 150, 150, 0.3)",
+    display: "grid",
+    gridTemplateRows: "auto [row1] 1fr [row2]",
+    gridTemplateColumns: "1fr [col1] auto [col2]",
+    boxShadow: "0 0 10px 0 rgba(75, 75, 75, 0.5)",
     borderRadius: 4,
     padding: 10,
-    backgroundColor: teal[200],
+    backgroundColor: teal[400],
     color: "white",
-    margin: 10,
-    width: "50vw",
-    maxHeight: 200,
+    [theme.breakpoints.down(800)]: {
+      gridColumn: "2 / 3",
+      gridRow: "1 / 2",
+    },
   },
-  columnBox: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "flex-start",
+  elem1: {
+    gridColumn: "1 / 1",
+    gridRow: "1 / 1",
+  },
+  elem2: {
+    gridColumn: "1 / 1",
+    gridRow: "2 / 2",
   },
   icon: {
+    gridColumn: "2 / 2",
+    gridRow: "1 / span 2",
     color: "white",
-    width: 70,
-    height: 70,
+    width: 50,
+    height: 50,
+    alignSelf: "center",
   },
 }));
 
@@ -62,10 +68,8 @@ function WalletTotalEarnings() {
 
   return (
     <div className={classes.mainContainer}>
-      <div className={classes.columnBox}>
-        <h7>Total Earnings (EUR)</h7>
-        <h2>{total}</h2>
-      </div>
+      <h4 className={classes.elem1}>Total Earnings </h4>
+      <h2>{total} EUR</h2>
       <MonetizationOnIcon className={classes.icon} />
     </div>
   );

@@ -1,13 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
 
-import { Line, Bar, Doughnut } from "react-chartjs-2";
+import { Doughnut } from "react-chartjs-2";
 import Loader from "./Loader";
 import { useSelector } from "react-redux";
 
 import styles from "./PieChart.module.css";
-
 import { makeStyles } from "@material-ui/core";
-import classes from "./PieChart.module.css";
 import {
   red,
   deepPurple,
@@ -18,27 +16,60 @@ import {
   lime,
   yellow,
   deepOrange,
+  blue,
 } from "@material-ui/core/colors";
 import { relativeTimeRounding } from "moment";
+import { CenterFocusStrong } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
-  chart: {
-    flexGrow: 1,
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-  },
-  chartsketch: {
-    width: "100%",
-    height: "100%",
+  // box: {
+  //   position: "relative",
+  //   display: "flex",
+  //   flexDirection: "column",
+  //   justifyContent: "flex-start",
+  //   alignItems: "flex-start",
+  //   boxShadow: "0 0 20px 0 rgba(50, 50, 50, 0.7)",
+  //   borderRadius: 4,
+  //   padding: 30,
+  //   backgroundColor: indigo[300],
+  //   alignSelf: "stretch !important",
+  // },
+  // title: {
+  //   color: "white",
+  //   marginBottom: 20,
+  // },
+  // canvasContainer: {
+  //   position: "relative",
+  //   width: "80% !important",
+  //   height: "80% !important",
+  //   margin: "auto",
+  // },
+
+  box: {
+    display: "grid",
+    gridTemplateColumns: "1fr [col1]",
+    gridTemplateRows: "48px [row1] 1fr [row2]",
+    boxShadow: "0 0 20px 0 rgba(100, 100, 100, 0.7)",
+    borderRadius: 4,
+    padding: 30,
+    backgroundColor: deepPurple[200],
+    [theme.breakpoints.down(800)]: {
+      gridColumn: "1 / 3",
+      gridRow: "3 / 4",
+    },
   },
   title: {
+    gridColumn: "1 / 1",
+    gridrow: "1 / 1",
     color: "white",
     marginBottom: 20,
-    alignSelf: "start",
-    justifySelf: "start",
+  },
+  canvasContainer: {
+    position: "relative",
+    gridColumn: "1 / 1",
+    gridrow: "2 / 2",
+    width: "100% !important",
+    margin: "auto",
   },
 }));
 
@@ -122,6 +153,8 @@ function PieChart() {
     });
 
     setOptions({
+      maintainAspectRatio: false,
+      responsive: true,
       legend: {
         display: true,
         position: "bottom",
@@ -140,14 +173,10 @@ function PieChart() {
   }
 
   return (
-    <div className={styles.box}>
+    <div className={classes.box}>
       <h1 className={classes.title}>Categories</h1>
-      <div className={classes.chart}>
-        <Doughnut
-          data={data}
-          options={options}
-          className={classes.chartsketch}
-        />
+      <div className={classes.canvasContainer}>
+        <Doughnut data={data} options={options} />
       </div>
     </div>
   );

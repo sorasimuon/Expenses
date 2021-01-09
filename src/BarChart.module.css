@@ -1,22 +1,13 @@
-.box {
-  position: relative;
-  left: 0;
-  top: 0;
+/* .box {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  box-shadow: 0 0 10px 0 rgba(150, 150, 150, 0.3);
+  box-shadow: 0 0 20px 0 rgba(50, 50, 50, 0.7);
   border-radius: 4px;
   padding: 30px;
-  background-color: #512da8;
-  margin: 10px;
-  width: 50vw;
-  height: 40vh;
-}
+  background-color: rgb(82, 45, 169);
+} */
 
-.chart {
-  flex: 1;
-  overflow-x: auto;
-  width: 100%;
-  height: 100%;
+canvas {
+  /* width: 100% !important;
+  height: 100% !important; */
 }
