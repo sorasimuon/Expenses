@@ -1,8 +1,13 @@
 // import core functions
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import styles from "./Login.module.css";
+import isEmpty from "is-empty";
+import axios from "./apis/axiosUsers";
+import { useSelector, useDispatch } from "react-redux";
+import { setUser } from "./features/userSlice";
 
+// Import for Styling and Material-UI
 import { makeStyles } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
@@ -15,12 +20,14 @@ import walletLogo from "./img/wallet.png";
 import messengerLogo from "./img/messenger.png";
 import HsWhite from "./img/Hs-White.png";
 import Slide from "@material-ui/core/Slide";
+import ErrorIcon from "@material-ui/icons/Error";
 
 // Declre styles to override default component styling
 const useStyles = makeStyles((theme) => ({
   large: {
     width: "100%",
   },
+
   space: {
     marginBottom: 20,
   },
@@ -29,10 +36,13 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: lightBlue[600],
     width: "100%",
     height: 50,
-    borderRadius: 25,
+    borderRadius: 4,
     marginTop: 30,
     "&:hover": {
       backgroundColor: lightBlue[800],
+    },
+    [theme.breakpoints.down(420)]: {
+      height: 32,
     },
   },
   newAccountButton: {
@@ -51,11 +61,39 @@ const useStyles = makeStyles((theme) => ({
     border: "3px solid #039be5",
     backgroundColor: "white,",
   },
+
+  textField: {
+    [theme.breakpoints.down(380)]: {
+      height: 28,
+    },
+  },
+  errorIcon: {
+    color: "red",
+  },
+}));
+
+const useStylesTextField = makeStyles((theme) => ({
+  root: {
+    color: lightBlue[300],
+    outline: "none",
+    [theme.breakpoints.down(380)]: {
+      fontSize: 10,
+    },
+    "&$focused": {
+      color: lightBlue[300],
+      borderBottomColor: lightBlue[300],
+    },
+  },
+  focused: {},
 }));
 
 function Login() {
   // Declare core functions
   const classes = useStyles();
+  const classesTextField = useStylesTextField();
+
+  const dispatch = useDispatch();
+
   const [width, setWidth] = useState(window.innerWidth);
   const [displayDescriptionBar, setDisplayDescriptionBar] = useState(true);
 
@@ -64,6 +102,41 @@ function Login() {
   const [email, setEmail] = useState();
   const [toolDescription, setToolDescription] = useState();
   const [toolSelected, setToolSelected] = useState(false);
+  const [errorMessages, setErrorMessages] = useState([]);
+  const history = useHistory();
+
+  const mailFormat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
+  const signIn = async (e) => {
+    e.preventDefault();
+    const validInput = checkValidityInput();
+
+    try {
+      if (validInput) {
+        const credentials = {
+          email: email,
+          password: password,
+        };
+
+        console.log(credentials);
+
+        const response = await axios({
+          method: "post",
+          url: "/signin",
+          data: credentials,
+        });
+
+        console.log(response);
+        if (response.status === 200) {
+          dispatch(setUser(response.data.userId));
+          history.push("/wallet");
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      setErrorMessages([error.response]);
+    }
+  };
 
   const handleToolMouseOver = (id) => {
     switch (id) {
@@ -91,6 +164,27 @@ function Login() {
     setWidth(window.innerWidth);
   };
 
+  const checkValidityInput = () => {
+    const messages = [];
+
+    if (isEmpty(email)) {
+      messages.push("Email is empty");
+    } else if (!email.match(mailFormat)) {
+      messages.push("Email wrong format");
+    }
+    if (isEmpty(password)) {
+      messages.push("Password  is empty");
+    }
+
+    setErrorMessages(messages);
+
+    if (isEmpty(messages)) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   useEffect(() => {
     window.addEventListener("resize", updateWidth);
 
@@ -101,7 +195,7 @@ function Login() {
 
   return (
     <div className={styles.login}>
-      <div className={styles.carroussel__container}></div>
+      <div className={styles.carroussel__container} />
       {width >= 960 ? (
         <div className={styles.carroussel__wrapper}>
           <h1 className={styles.title}>
@@ -146,18 +240,43 @@ function Login() {
           className={`${styles.logo1} ${classes.space}`}
           alt="Hs logo"
         />
-        {/* <img className={styles.logo2} src={HsLightBlue} alt="Hs" /> */}
-        <h2>LOG IN</h2>
+        <h1 className={styles.subject}>LOG IN</h1>
+
+        {/* Error messages display */}
+        <div className={styles.errorMessagesContainer}>
+          {!isEmpty(errorMessages) && (
+            <p className={styles.errorMesssages}>
+              <ErrorIcon className={classes.errorIcon} /> Error
+            </p>
+          )}
+          {!isEmpty(errorMessages) &&
+            errorMessages.map((message, id) => (
+              <p key={id} className={styles.errorMessages}>
+                {message}
+              </p>
+            ))}
+        </div>
+
         <TextField
-          className={`${classes.large} ${classes.space}`}
+          fullWidth
+          className={`${classes.textField} ${classes.space}`}
           label="Email"
           type="text"
           value={email}
+          inputProps={{ value: email }}
+          InputLabelProps={{
+            classes: classesTextField,
+          }}
           onChange={(e) => setEmail(e.target.value)}
         />
 
         <TextField
-          className={`${classes.large} ${classes.space}`}
+          data-testid="inputPassword"
+          fullWidth
+          className={`${classes.textField} ${classes.space}`}
+          InputLabelProps={{
+            classes: classesTextField,
+          }}
           label="Password"
           type={showPassword ? "text" : "password"}
           value={password}
@@ -176,7 +295,10 @@ function Login() {
           }}
         />
 
-        <Button className={`${classes.loginButton} ${classes.space}`}>
+        <Button
+          className={`${classes.loginButton} ${classes.space}`}
+          onClick={(e) => signIn(e)}
+        >
           LOGIN
         </Button>
         <p className={styles.newAccount}>

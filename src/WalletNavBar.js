@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -42,6 +42,10 @@ const useStyles = makeStyles((theme) => ({
     position: "relative",
     width: 40,
     height: 40,
+    [theme.breakpoints.down(460)]: {
+      width: 24,
+      height: 24,
+    },
     marginRight: 5,
   },
   titleLogo: {
@@ -55,6 +59,9 @@ const useStyles = makeStyles((theme) => ({
     color: "white",
     fontSize: 18,
     margin: "0px 10px 0px 10px",
+    [theme.breakpoints.down(460)]: {
+      fontSize: 12,
+    },
   },
   appBarIcon: {
     color: "white",
@@ -63,8 +70,17 @@ const useStyles = makeStyles((theme) => ({
     "&:focus": {
       color: deepOrange[500],
     },
+    [theme.breakpoints.down(460)]: {
+      fontSize: 24,
+    },
   },
-  gridElement1: { gridColumnStart: 1, "&:focus": { outline: "none" } },
+  gridElement1: {
+    gridColumnStart: 1,
+    "&:focus": { outline: "none" },
+    [theme.breakpoints.down(460)]: {
+      width: "auto",
+    },
+  },
   gridElement2: { gridColumnStart: 2, "&:focus": { outline: "none" } },
   gridElement3: { gridColumnStart: 3, "&:focus": { outline: "none" } },
 }));
@@ -73,22 +89,36 @@ function WalletNavBar() {
   //useStyles from Material-UI
   const classes = useStyles();
 
+  // UseStates
+  const [windowWidth, setWindowWidth] = useState();
+
   // Redux : dispatch and selectors
   const dateFromSelector = useSelector((state) => state.expenses.dateFrom);
   const dateToSelector = useSelector((state) => state.expenses.dateTo);
+
+  const updateWindowWidth = () => {
+    setWindowWidth(window.innerWidth);
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", updateWindowWidth);
+    return () => {
+      window.removeEventListener("resize", updateWindowWidth);
+    };
+  }, [window.Width]);
 
   return (
     <AppBar position="static" className={classes.appBar}>
       <Toolbar className={classes.toolBar}>
         <div className={classes.rowSection}>
           <img src={walletLogo} alt="logo" className={classes.logo} />
-          <h1 className={classes.titleLogo}>Wallet</h1>
+          {windowWidth > 460 && <h1 className={classes.titleLogo}>Wallet</h1>}
         </div>
         <div className={classes.rowSection}>
           <h2 className={classes.date}>{dateFromSelector}</h2>
           <h2 className={classes.date}>{dateToSelector}</h2>
         </div>
-        <div className={styles.gridSection}>
+        {/* <div className={styles.gridMenu}>
           <MenuTheme />
           <IconButton size="small" className={classes.gridElement2}>
             <Badge badgeContent={4} color="secondary">
@@ -100,7 +130,7 @@ function WalletNavBar() {
               <AccountCircleIcon className={classes.appBarIcon} />
             </Badge>
           </IconButton>
-        </div>
+        </div> */}
       </Toolbar>
     </AppBar>
   );

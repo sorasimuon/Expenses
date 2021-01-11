@@ -8,6 +8,13 @@ import {
   setDateTo,
   setSubExpenses,
 } from "./features/expensesSlice";
+import {
+  setEarnings,
+  setDateFromEarnings,
+  setDateToEarnings,
+  setSubEarnings,
+} from "./features/earningsSlice";
+
 import WalletNewExpense from "./WalletNewExpense";
 
 // Styling import
@@ -19,6 +26,7 @@ import ButtonGroup from "@material-ui/core/ButtonGroup";
 import Button from "@material-ui/core/Button";
 import { teal, grey, lightBlue } from "@material-ui/core/colors";
 import RefreshIcon from "@material-ui/icons/Refresh";
+import IconButton from "@material-ui/core/IconButton";
 
 const useStyles = makeStyles((theme) => ({
   datePicker: {
@@ -44,18 +52,30 @@ const useStyles = makeStyles((theme) => ({
     "&:focus": {
       outline: "none",
     },
+    [theme.breakpoints.down(520)]: {
+      fontSize: 12,
+      marginLeft: 5,
+    },
   },
   refreshIcon: {
     marginRight: theme.spacing(1),
   },
 }));
 
-const useStylesTextField = makeStyles((theme) => ({
+const useStyleTextFieldLabel = makeStyles((theme) => ({
   root: {
-    color: teal[300],
+    outline: "none",
+    [theme.breakpoints.down(380)]: {},
+    "&$focused": {},
+  },
+  focused: {},
+}));
+
+const useStyleTextField = makeStyles((theme) => ({
+  root: {
     outline: "none",
     [theme.breakpoints.down(380)]: {
-      fontSize: 10,
+      fontSize: 12,
     },
     "&$focused": {
       color: lightBlue[300],
@@ -68,11 +88,25 @@ const useStylesTextField = makeStyles((theme) => ({
 function WalletTimeFilter() {
   // Styling function
   const classes = useStyles();
-  const classesTextField = useStylesTextField();
+  const classesTextFieldLabel = useStyleTextFieldLabel();
+  const classesTextField = useStyleTextField();
 
   // useRef variables
   const dateFromRef = useRef(null);
   const dateToRef = useRef(null);
+
+  //  useState fro window innerWidth
+  const [windowWidth, setWindowWidth] = useState();
+  const updateWindowWidth = () => {
+    setWindowWidth(window.innerWidth);
+  };
+  useEffect(() => {
+    window.addEventListener("resize", updateWindowWidth);
+
+    return () => {
+      window.removeEventListener("resize", updateWindowWidth);
+    };
+  });
 
   // Dispatch for Reducer Redux
   const dispatch = useDispatch();
@@ -80,6 +114,8 @@ function WalletTimeFilter() {
   // Selector of redux data store
   const expenses = useSelector((state) => state.expenses.expenses);
   const subExpenses = useSelector((state) => state.expenses.subExpenses);
+  const earnings = useSelector((state) => state.earnings.earnings);
+  const subEarnings = useSelector((state) => state.earnings.subEarnings);
 
   // Functions
 
@@ -88,6 +124,7 @@ function WalletTimeFilter() {
     from = new Date(from);
     to = new Date(to);
     const subExp = [];
+    const subEarn = [];
 
     // select data of expenses.expenses Slice between from and to
     expenses.forEach((expense) => {
@@ -98,6 +135,16 @@ function WalletTimeFilter() {
     });
 
     dispatch(setSubExpenses(subExp));
+
+    // select data of earnings.earnings Slice between from and to
+    earnings.forEach((earning) => {
+      let earningDate = new Date(earning.date);
+      if (earningDate >= from && earningDate <= to) {
+        subEarn.push(earning);
+      }
+    });
+
+    dispatch(setSubEarnings(subEarn));
   };
 
   const dataRefresh = (e) => {
@@ -109,6 +156,8 @@ function WalletTimeFilter() {
     // save date to Redux store
     dispatch(setDateFrom(from));
     dispatch(setDateTo(to));
+    dispatch(setDateFromEarnings(from));
+    dispatch(setDateToEarnings(to));
 
     selectData(from, to);
   };
@@ -117,7 +166,7 @@ function WalletTimeFilter() {
     const from = dateFromRef.current.value;
     const to = dateToRef.current.value;
     selectData(from, to);
-  }, [expenses]);
+  }, [expenses, earnings]);
 
   return (
     <div className={styles.box}>
@@ -126,8 +175,11 @@ function WalletTimeFilter() {
         label="From"
         type="date"
         defaultValue="1970-01-01"
-        InputLabelProps={{
+        InputProps={{
           classes: classesTextField,
+        }}
+        InputLabelProps={{
+          classes: classesTextFieldLabel,
         }}
         className={classes.datePicker}
       />
@@ -136,16 +188,31 @@ function WalletTimeFilter() {
         label="To"
         type="date"
         defaultValue="1970-01-01"
-        InputLabelProps={{
+        InputProps={{
           classes: classesTextField,
+        }}
+        InputLabelProps={{
+          classes: classesTextFieldLabel,
         }}
         className={classes.datePicker}
       />
 
-      <Button className={classes.refreshButton} onClick={(e) => dataRefresh(e)}>
-        <RefreshIcon className={classes.refreshIcon} />
-        Refresh
-      </Button>
+      {windowWidth > 520 ? (
+        <Button
+          className={classes.refreshButton}
+          onClick={(e) => dataRefresh(e)}
+        >
+          <RefreshIcon className={classes.refreshIcon} />
+          Refresh
+        </Button>
+      ) : (
+        <IconButton
+          className={classes.refreshButton}
+          onClick={(e) => dataRefresh(e)}
+        >
+          <RefreshIcon />
+        </IconButton>
+      )}
     </div>
   );
 }

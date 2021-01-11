@@ -28,6 +28,9 @@ const useStyles = makeStyles((theme) => ({
     "&:focus": {
       color: deepOrange[500],
     },
+    [theme.breakpoints.down(460)]: {
+      fontSize: 24,
+    },
   },
   gridElement: {
     gridColumnStart: 1,

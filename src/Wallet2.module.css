@@ -9,6 +9,28 @@
   height: 100%;
   background-color: rgb(240, 240, 240);
 }
+@media (min-width: 601px) {
+  .filterContainer {
+    display: grid;
+    grid-column-start: 1fr [row];
+    grid-template-columns: 1fr [row];
+    column-gap: 20px;
+    padding: 10px;
+    margin-bottom: 20px;
+  }
+}
+@media (max-width: 600px) {
+  .filterContainer {
+    display: grid;
+    grid-column-start: 1;
+    grid-template-columns: 1fr [row];
+    grid-template-rows: 1fr [row];
+    column-gap: 20px;
+    padding: 10px;
+    margin-bottom: 20px;
+  }
+}
+
 .filterContainer {
   display: grid;
   grid-column-start: 1;

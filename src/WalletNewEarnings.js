@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     alignItems: "center",
   },
-  newExpenseButton: {
+  newEarningsButton: {
     gridColumn: "2 / 2",
     gridRow: "1 / 3",
     color: "white",
@@ -44,20 +44,20 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: deepOrange["A700"],
+    backgroundColor: teal[700],
     boxShadow: "0 0 10px 0 rgba(150, 150, 150, 0.3)",
     color: "rgba(255,255,255,0.8)",
     fontWeight: "bold",
     borderRadius: "4px",
     padding: 10,
     "&:hover": {
-      backgroundColor: deepOrange[200],
+      backgroundColor: teal[200],
     },
     "&:focus": {
       outline: "none",
     },
   },
-  newExpenseIcon: {
+  newEarningsIcon: {
     marginRight: theme.spacing(1),
     color: "rgba(255,255,255,0.8)",
     height: 32,
@@ -146,18 +146,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function WalletNewExpense() {
+function WalletNewEarnings() {
   const classes = useStyles();
-
-  // default lists
-  const listCategory = [
-    "Groceries",
-    "Shopping",
-    "Bill",
-    "Rent payment",
-    "Entertainment",
-    "Other",
-  ];
 
   const listCurrencies = [
     { value: "EUR", flag: <IconFlagEU /> },
@@ -165,8 +155,8 @@ function WalletNewExpense() {
     { value: "GBP", flag: <IconFlagUK /> },
   ];
 
-  const typeList = ["Cash", "Credit Card"];
-  const sourceTypeList = [
+  const typeList = ["Cash", "Cheque", "Bank Transfer"];
+  const bankList = [
     "Cash",
     "Revolut",
     "Caisse Epargne",
@@ -180,14 +170,13 @@ function WalletNewExpense() {
 
   // useState
   const [open, setOpen] = useState(false);
-  const [name, setName] = useState();
+  const [from, setFrom] = useState();
   const [date, setDate] = useState();
   const [categoryList, setCategoryList] = useState([]);
-  const [category, setCategory] = useState(listCategory[0]);
   const [amount, setAmount] = useState(0);
   const [currency, setCurrency] = useState(listCurrencies[0]);
   const [type, setType] = useState(typeList[0]);
-  const [sourceType, setSourceType] = useState(sourceTypeList[0]);
+  const [sourceType, setSourceType] = useState(bankList[0]);
 
   //useSelector
   const userId = useSelector((state) => state.user.userId);
@@ -210,9 +199,8 @@ function WalletNewExpense() {
   };
   const handleClose = () => {
     // Reinitialise the state
-    setName();
+    setFrom();
     setDate();
-    setCategory();
     setCategoryList([]);
     setAmount();
     setCurrency();
@@ -221,7 +209,7 @@ function WalletNewExpense() {
     setOpen(false);
   };
 
-  const addNewExpense = async (e) => {
+  const addNewEarnings = async (e) => {
     e.preventDefault();
     // create new Expense
     let newExpense = {};
@@ -229,13 +217,12 @@ function WalletNewExpense() {
     newExpense.type = type;
     newExpense.source_type = sourceType;
     newExpense.date = parseInt(Date.parse(date));
-    newExpense.categories = categoryList;
-    newExpense.name = name;
+    newExpense.from = from;
     newExpense.amount = parseInt(amount);
     newExpense.currency = currency;
 
     // Push to Database
-    const response = await axiosExpenses.post("/expense", newExpense);
+    const response = await axiosExpenses.post("/earning", newExpense);
 
     // Close the modal
     if (response.status === 200) {
@@ -254,9 +241,9 @@ function WalletNewExpense() {
 
   return (
     <React.Fragment>
-      <Button className={classes.newExpenseButton} onClick={handleOpen}>
-        <AddCircleIcon className={classes.newExpenseIcon} />
-        NEW EXPENSE
+      <Button className={classes.newEarningsButton} onClick={handleOpen}>
+        <AddCircleIcon className={classes.newEarningsIcon} />
+        NEW EARNINGS
       </Button>
       <Modal
         aria-labelledby="Modal-create-new-expense"
@@ -271,15 +258,15 @@ function WalletNewExpense() {
       >
         <Fade in={open}>
           <div className={classes.paper}>
-            <h2>New Expense</h2>
+            <h2>New Earnings</h2>
             <form className={classes.form}>
               <TextField
                 required
                 multiline
                 className={classes.textField}
                 type="text"
-                label="Name"
-                onChange={(e) => setName(e.target.value)}
+                label="From"
+                onChange={(e) => setFrom(e.target.value)}
               />
               <TextField
                 required
@@ -291,30 +278,6 @@ function WalletNewExpense() {
                   shrink: true,
                 }}
               />
-              <div className={classes.rowBox}>
-                <TextField
-                  select
-                  type="text"
-                  label="Category"
-                  className={classes.textField}
-                  style={{ marginRight: 10, marginBottom: 0 }}
-                  value={category ? category : listCategory[0]}
-                  onChange={(e) => setCategory(e.target.value)}
-                >
-                  {listCategory.map((cat) => (
-                    <MenuItem key={cat} value={cat}>
-                      {cat}
-                    </MenuItem>
-                  ))}
-                </TextField>
-                <Button
-                  className={`${classes.addCategoryButton} ${classes.alignRight}`}
-                  onClick={() => handleCategory(category)}
-                >
-                  <AddIcon />
-                  Add
-                </Button>
-              </div>
               <div className={classes.categoryContainer}>
                 {categoryList.map((category) => (
                   <p key={uuidv4()} className={classes.category}>
@@ -362,12 +325,12 @@ function WalletNewExpense() {
               <TextField
                 select
                 type="text"
-                label="Source Type"
-                value={sourceType ? sourceType : sourceTypeList[0]}
+                label="Bank"
+                value={sourceType ? sourceType : bankList[0]}
                 className={classes.textField}
                 onChange={(e) => setSourceType(e.target.value)}
               >
-                {sourceTypeList.map((sourceType) => (
+                {bankList.map((sourceType) => (
                   <MenuItem key={uuidv4()} value={sourceType}>
                     {sourceType}
                   </MenuItem>
@@ -384,10 +347,10 @@ function WalletNewExpense() {
                 <Button
                   className={`${classes.submitButton} ${classes.alignRight}`}
                   type="submit"
-                  onClick={(e) => addNewExpense(e)}
+                  onClick={(e) => addNewEarnings(e)}
                 >
-                  <AddIcon className={classes.newExpenseIcon} />
-                  ADD NEW EXPENSE
+                  <AddIcon className={classes.newEarningsIcon} />
+                  ADD NEW EARNINGS
                 </Button>
               </div>
             </form>
@@ -398,4 +361,4 @@ function WalletNewExpense() {
   );
 }
 
-export default WalletNewExpense;
+export default WalletNewEarnings;

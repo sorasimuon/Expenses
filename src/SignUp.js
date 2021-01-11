@@ -4,6 +4,8 @@ import { Link, useHistory } from "react-router-dom";
 import styles from "./SignUp.module.css";
 import isEmpty from "is-empty";
 import axios from "./apis/axiosUsers";
+import { setUser } from "./features/userSlice";
+import { useSelector, useDispatch } from "react-redux";
 
 import { makeStyles, useMediaQuery } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
@@ -86,6 +88,9 @@ function SignUp() {
   const [errorMessages, setErrorMessages] = useState([]);
   const history = useHistory();
 
+  // Redux
+  const dispatch = useDispatch();
+
   const mailFormat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
   const signUp = async (e) => {
@@ -94,7 +99,6 @@ function SignUp() {
 
     try {
       if (validInput) {
-        console.log("OK I am here");
         const credentials = {
           firstname: firstname,
           lastname: lastname,
@@ -106,11 +110,13 @@ function SignUp() {
 
         console.log(response);
         if (response.status === 201) {
+          console.log(response.data);
+          dispatch(setUser(response.data.userId));
           history.push("/wallet");
         }
       }
     } catch (error) {
-      setErrorMessages([error.response]);
+      setErrorMessages([error.response.data]);
     }
   };
 

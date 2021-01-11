@@ -8,22 +8,11 @@ import styles from "./BarChart.module.css";
 
 import { makeStyles } from "@material-ui/core";
 import classes from "./BarChart.module.css";
-import { blue } from "@material-ui/core/colors";
+import { blue, deepOrange, teal } from "@material-ui/core/colors";
 import { relativeTimeRounding } from "moment";
 import { ImportantDevices } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
-  // box: {
-  //   position: "relative",
-  //   display: "flex",
-  //   flexDirection: "column",
-  //   justifyContent: "flex-start",
-  //   alignItems: "flex-start",
-  //   boxShadow: "0 0 20px 0 rgba(50, 50, 50, 0.7)",
-  //   borderRadius: 4,
-  //   padding: 30,
-  //   backgroundColor: blue[700],
-  // },
   box: {
     display: "grid",
     gridTemplateColumns: "1fr [col1]",
@@ -31,10 +20,14 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: "0 0 20px 0 rgba(50, 50, 50, 0.7)",
     borderRadius: 4,
     padding: 30,
-    backgroundColor: blue[700],
-    [theme.breakpoints.down(800)]: {
+    backgroundColor: blue[200],
+    [theme.breakpoints.between(601, 800)]: {
       gridColumn: "1 / 3",
       gridRow: "2 / 3",
+    },
+    [theme.breakpoints.down(600)]: {
+      gridColumn: "1 / 3",
+      gridRow: "3 / 4",
     },
   },
   title: {
@@ -69,8 +62,8 @@ function BarChart() {
   const ExpenseChartRef = useRef(null);
 
   // Selector
-  let subExpenses = useSelector((state) => state.expenses.subExpenses);
-
+  const subExpenses = useSelector((state) => state.expenses.subExpenses);
+  const subEarnings = useSelector((state) => state.earnings.subEarnings);
   //Define Options
   const [options, setOptions] = useState({
     maintainAspectRatio: false,
@@ -136,11 +129,11 @@ function BarChart() {
     let consolidated_arr = [];
     let tempObj = {};
 
-    arr.forEach((expense) => {
-      if (tempObj[expense.date]) {
-        tempObj[expense.date.toString()] += expense.amount;
+    arr.forEach((obj) => {
+      if (tempObj[obj.date]) {
+        tempObj[obj.date.toString()] += obj.amount;
       } else {
-        tempObj[expense.date.toString()] = expense.amount;
+        tempObj[obj.date.toString()] = obj.amount;
       }
     });
 
@@ -154,19 +147,30 @@ function BarChart() {
   };
 
   useEffect(() => {
-    let copy_arr = subExpenses.slice();
-    copy_arr = copy_arr.sort((a, b) => b.date - a.date);
+    let copy_subExpenses = subExpenses.slice();
+    copy_subExpenses = copy_subExpenses.sort((a, b) => b.date - a.date);
+    const dataExpenses = consolidateData(copy_subExpenses);
 
-    const chartData = consolidateData(copy_arr);
+    let copy_subEarnings = subEarnings.slice();
+    copy_subEarnings = copy_subEarnings.sort((a, b) => b.date - a.date);
+    const dataEarnings = consolidateData(copy_subEarnings);
 
     setData({
       datasets: [
         {
           label: "Expenses",
-          data: chartData,
-          backgroundColor: blue[200],
-          borderColor: blue[700],
-          pointBorderColor: blue[700],
+          data: dataExpenses,
+          backgroundColor: deepOrange[200],
+          borderColor: deepOrange[700],
+          pointBorderColor: deepOrange[700],
+          borderWidth: 1,
+        },
+        {
+          label: "Earnings",
+          data: dataEarnings,
+          backgroundColor: teal[300],
+          borderColor: teal[700],
+          pointBorderColor: teal[700],
           borderWidth: 1,
         },
       ],

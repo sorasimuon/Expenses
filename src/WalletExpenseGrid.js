@@ -13,9 +13,13 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: "0 0 10px 0 rgba(75, 75, 75, 0.5)",
     gridColumn: "1 / 3",
     gridRow: "3 / 4",
-    [theme.breakpoints.down(800)]: {
+    [theme.breakpoints.between(601, 800)]: {
       gridColumn: "1 / 3",
       gridRow: "4 / 5",
+    },
+    [theme.breakpoints.down(600)]: {
+      gridColumn: "1 / 3",
+      gridRow: "5 / 6",
     },
   },
 }));

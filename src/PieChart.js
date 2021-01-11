@@ -53,9 +53,13 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 4,
     padding: 30,
     backgroundColor: deepPurple[200],
-    [theme.breakpoints.down(800)]: {
+    [theme.breakpoints.between(601, 800)]: {
       gridColumn: "1 / 3",
       gridRow: "3 / 4",
+    },
+    [theme.breakpoints.down(600)]: {
+      gridColumn: "1 / 3",
+      gridRow: "4 / 5",
     },
   },
   title: {

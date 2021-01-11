@@ -6,6 +6,7 @@ import WalletNavBar from "./WalletNavBar";
 import WalletTimeFilter from "./WalletTimeFilter";
 import WalletMainContainer from "./WalletMainContainer";
 import WalletNewExpense from "./WalletNewExpense";
+import WalletNewEarnings from "./WalletNewEarnings";
 
 import isEmpty from "is-empty";
 import axiosExpenses from "./apis/axiosExpenses";
@@ -18,6 +19,12 @@ import {
   setDateTo,
   setSubExpenses,
 } from "./features/expensesSlice";
+import {
+  setEarnings,
+  setDateFromEarnings,
+  setDateToEarnings,
+  setSubEarnings,
+} from "./features/earningsSlice";
 import { setUser } from "./features/userSlice";
 
 // Import Styling + Material-UI
@@ -61,18 +68,60 @@ function Wallet() {
 
   // useState variables
   const [isLoading, setIsLoading] = useState(false);
+  const [errorEarnings, setErrorEarnings] = useState([]);
+  const [errorExpenses, setErrorExpenses] = useState([]);
 
   // Redux : dispatch and selectors
   const dispatch = useDispatch();
   const reload = useSelector((state) => state.expenses.reload);
   const alertAdd = useSelector((state) => state.expenses.alertAdd);
+  const userId = useSelector((state) => state.user.userId);
 
   // useEffect
   useEffect(() => {
+    // Fetch earnings from DB
+    (async () => {
+      try {
+        const URL = `/earnings?userId=${userId}`;
+        dispatch(setUser(userId));
+        setIsLoading(true);
+        const response = await axiosExpenses.get(URL);
+        setIsLoading(false);
+
+        const content = [];
+        for (let earning of response.data) {
+          let temp = {};
+          temp.id = earning._id;
+          temp.userId = earning.userId;
+          temp.date = parseInt(earning.date);
+          temp.name = earning.name;
+          temp.source_type = earning.source_type;
+          temp.type = earning.type;
+          temp.amount = parseFloat(earning.amount);
+          temp.currency = earning.currency;
+          delete earning._id;
+          content.push(temp);
+        }
+
+        dispatch(setEarnings(content));
+      } catch (error) {
+        switch (error.response.status) {
+          case 400:
+            console.log("Result not found for this user");
+            setErrorEarnings("No data ");
+            break;
+          default:
+            console.log(
+              "Oops, Somthing wrong happened during request Earnings"
+            );
+            setErrorEarnings("Error on request");
+        }
+      }
+    })();
+
     // Fetch expenses from DB
     (async () => {
       try {
-        const userId = "5f04994667fcbfe11f771712";
         const URL = `/expenses?userId=${userId}`;
         setIsLoading(true);
 
@@ -94,7 +143,6 @@ function Wallet() {
           delete expense._id;
           content.push(temp);
         }
-        dispatch(setUser(userId));
         dispatch(setExpenses(content));
       } catch (error) {}
     })();
@@ -104,15 +152,7 @@ function Wallet() {
     <div className={styles.wallet}>
       <WalletNavBar />
       <div className={styles.filterContainer}>
-        <div
-          style={{
-            gridColumn: "1 / 1",
-            display: "flex",
-          }}
-        >
-          <WalletNewExpense />
-        </div>
-        <WalletTimeFilter style="grid-column: 2/2" />
+        <WalletTimeFilter />
       </div>
       <WalletMainContainer />
     </div>
