@@ -1,3 +1,6 @@
+.mainContainer {
+  overflow: auto;
+}
 @media (min-width: 800px) {
   @media (min-width: 1920px) {
     .mainContainer {

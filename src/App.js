@@ -22,8 +22,7 @@ function App() {
     <Router>
       <Switch>
         <Route path="/login">
-          {/* <Login /> */}
-          <Login2 />
+          <Login />
         </Route>
         <Route path="/signup">
           <SignUp />
