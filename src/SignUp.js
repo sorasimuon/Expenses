@@ -111,7 +111,7 @@ function SignUp() {
         console.log(response);
         if (response.status === 201) {
           console.log(response.data);
-          dispatch(setUser(response.data.userId));
+          dispatch(setUser(response.data));
           history.push("/wallet");
         }
       }

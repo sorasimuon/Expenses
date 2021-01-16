@@ -144,6 +144,9 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 4,
     margin: 4,
   },
+  title: {
+    color: teal[500],
+  },
 }));
 
 function WalletNewEarnings() {
@@ -235,9 +238,7 @@ function WalletNewEarnings() {
     handleClose();
   };
 
-  useEffect(() => {
-    console.log(categoryList);
-  }, [categoryList]);
+  useEffect(() => {}, [categoryList]);
 
   return (
     <React.Fragment>
@@ -258,7 +259,7 @@ function WalletNewEarnings() {
       >
         <Fade in={open}>
           <div className={classes.paper}>
-            <h2>New Earnings</h2>
+            <h2 className={classes.title}>New Earnings</h2>
             <form className={classes.form}>
               <TextField
                 required

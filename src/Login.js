@@ -21,6 +21,7 @@ import messengerLogo from "./img/messenger.png";
 import HsWhite from "./img/Hs-White.png";
 import Slide from "@material-ui/core/Slide";
 import ErrorIcon from "@material-ui/icons/Error";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 // Declre styles to override default component styling
 const useStyles = makeStyles((theme) => ({
@@ -103,13 +104,17 @@ function Login() {
   const [toolDescription, setToolDescription] = useState();
   const [toolSelected, setToolSelected] = useState(false);
   const [errorMessages, setErrorMessages] = useState([]);
+  const [disabledSignIn, setDisableSignIn] = useState(false);
   const history = useHistory();
+
+  const userId = useSelector((state) => state.user.userId);
 
   const mailFormat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
   const signIn = async (e) => {
     e.preventDefault();
     const validInput = checkValidityInput();
+    setDisableSignIn(true);
 
     try {
       if (validInput) {
@@ -118,23 +123,23 @@ function Login() {
           password: password,
         };
 
-        console.log(credentials);
-
-        const response = await axios({
-          method: "post",
-          url: "/signin",
-          data: credentials,
-        });
-
-        console.log(response);
-        if (response.status === 200) {
-          dispatch(setUser(response.data.userId));
+        const response = await axios.post("/signin", credentials);
+        if (!response.error) {
+          console.log("connected");
+          dispatch(setUser(response.data));
           history.push("/wallet");
+        } else {
+          console.log(response.error);
         }
       }
     } catch (error) {
-      console.log(error);
-      setErrorMessages([error.response]);
+      if (error.toString() == "Error: Network Error") {
+        setErrorMessages(["Error connection to server"]);
+      } else {
+        setErrorMessages([error.response]);
+      }
+    } finally {
+      setDisableSignIn(false);
     }
   };
 
@@ -160,9 +165,6 @@ function Login() {
     setToolDescription("");
     setToolSelected(false);
   };
-  const updateWidth = () => {
-    setWidth(window.innerWidth);
-  };
 
   const checkValidityInput = () => {
     const messages = [];
@@ -186,12 +188,22 @@ function Login() {
   };
 
   useEffect(() => {
-    window.addEventListener("resize", updateWidth);
-
-    return () => {
-      window.removeEventListener("resize", updateWidth);
+    let isMounted = true;
+    const updateWidth = () => {
+      if (isMounted) {
+        setWidth(window.innerWidth);
+      }
     };
-  });
+
+    window.addEventListener("resize", updateWidth);
+    console.log(isMounted);
+    return () => {
+      isMounted = false;
+
+      window.removeEventListener("resize", updateWidth);
+      console.log(isMounted);
+    };
+  }, []);
 
   return (
     <div className={styles.login}>
@@ -262,8 +274,8 @@ function Login() {
           className={`${classes.textField} ${classes.space}`}
           label="Email"
           type="text"
-          value={email}
-          inputProps={{ value: email }}
+          // value={email || ""}
+          inputProps={{ value: email || "" }}
           InputLabelProps={{
             classes: classesTextField,
           }}
@@ -279,9 +291,10 @@ function Login() {
           }}
           label="Password"
           type={showPassword ? "text" : "password"}
-          value={password}
+          // value={password || ""}
           onChange={(e) => setPassword(e.target.value)}
           InputProps={{
+            value: password || "",
             endAdornment: (
               <InputAdornment position="end">
                 <IconButton
@@ -296,10 +309,12 @@ function Login() {
         />
 
         <Button
+          disabled={disabledSignIn}
           className={`${classes.loginButton} ${classes.space}`}
           onClick={(e) => signIn(e)}
         >
           LOGIN
+          {disabledSignIn && <CircularProgress style={{ color: "white" }} />}
         </Button>
         <p className={styles.newAccount}>
           Don't have an account?{" "}

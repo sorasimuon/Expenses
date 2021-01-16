@@ -96,7 +96,7 @@ function WalletTimeFilter() {
   const dateToRef = useRef(null);
 
   //  useState fro window innerWidth
-  const [windowWidth, setWindowWidth] = useState();
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const updateWindowWidth = () => {
     setWindowWidth(window.innerWidth);
   };

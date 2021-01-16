@@ -1,5 +1,6 @@
 import { Badge } from "@material-ui/core";
 import React, { useRef, useEffect, useState } from "react";
+import { useHistory, Redirect } from "react-router-dom";
 
 // Import React Components
 import WalletNavBar from "./WalletNavBar";
@@ -77,13 +78,15 @@ function Wallet() {
   const alertAdd = useSelector((state) => state.expenses.alertAdd);
   const userId = useSelector((state) => state.user.userId);
 
+  // other Hooks
+  const history = useHistory();
+
   // useEffect
   useEffect(() => {
     // Fetch earnings from DB
     (async () => {
       try {
         const URL = `/earnings?userId=${userId}`;
-        dispatch(setUser(userId));
         setIsLoading(true);
         const response = await axiosExpenses.get(URL);
         setIsLoading(false);
@@ -102,13 +105,13 @@ function Wallet() {
           delete earning._id;
           content.push(temp);
         }
-
         dispatch(setEarnings(content));
       } catch (error) {
         switch (error.response.status) {
           case 400:
             console.log("Result not found for this user");
             setErrorEarnings("No data ");
+
             break;
           default:
             console.log(

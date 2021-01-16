@@ -13,6 +13,7 @@ import styles from "./WalletNavBar.module.css";
 import { makeStyles } from "@material-ui/core";
 import { teal, deepOrange } from "@material-ui/core/colors";
 import MenuTheme from "./MenuTheme";
+import MenuUser from "./MenuUser";
 import AppBar from "@material-ui/core/AppBar";
 import IconButton from "@material-ui/core/IconButton";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -118,19 +119,15 @@ function WalletNavBar() {
           <h2 className={classes.date}>{dateFromSelector}</h2>
           <h2 className={classes.date}>{dateToSelector}</h2>
         </div>
-        {/* <div className={styles.gridMenu}>
-          <MenuTheme />
+        <div className={styles.gridMenu}>
+          {/* <MenuTheme />
           <IconButton size="small" className={classes.gridElement2}>
             <Badge badgeContent={4} color="secondary">
               <ChatIcon className={classes.appBarIcon} />
             </Badge>
-          </IconButton>
-          <IconButton size="small" className={classes.gridElement3}>
-            <Badge badgeContent="" color="secondary">
-              <AccountCircleIcon className={classes.appBarIcon} />
-            </Badge>
-          </IconButton>
-        </div> */}
+          </IconButton> */}
+          <MenuUser />
+        </div>
       </Toolbar>
     </AppBar>
   );

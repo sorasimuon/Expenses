@@ -86,12 +86,12 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: teal[500],
+    backgroundColor: deepOrange[500],
     color: "white",
     justifySelf: "end",
     borderRadius: "4px",
     "&:hover": {
-      backgroundColor: teal[800],
+      backgroundColor: deepOrange[800],
     },
   },
   cancelButton: {
@@ -143,6 +143,9 @@ const useStyles = makeStyles((theme) => ({
     color: "white",
     borderRadius: 4,
     margin: 4,
+  },
+  title: {
+    color: deepOrange[500],
   },
 }));
 
@@ -248,9 +251,7 @@ function WalletNewExpense() {
     handleClose();
   };
 
-  useEffect(() => {
-    console.log(categoryList);
-  }, [categoryList]);
+  useEffect(() => {}, [categoryList]);
 
   return (
     <React.Fragment>
@@ -271,7 +272,7 @@ function WalletNewExpense() {
       >
         <Fade in={open}>
           <div className={classes.paper}>
-            <h2>New Expense</h2>
+            <h2 className={classes.title}>New Expense</h2>
             <form className={classes.form}>
               <TextField
                 required
