@@ -28,7 +28,7 @@ Wallet page:
 
 
 Data loaded from backend service Expenses (https://github.com/sorasimuon/Service_Expenses):
-![plot](./Capture-Wallet+graphs.PNG)
+![plot](./Capture-Wallet+Data.PNG)
 
 
 
