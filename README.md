@@ -13,6 +13,6 @@ Credential tests:
 username : "test@email.com"
 password: "doudoushi"
 
-![plot](./directory_1/directory_2/.../directory_n/Capture-SignIn.PNG)
+![plot](./Capture-SignIn.PNG)
 
 
