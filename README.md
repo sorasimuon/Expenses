@@ -2,13 +2,15 @@
 
 A front end aplication "Wallet" where the user can access and tracks his daily expenses. 
 
-It connects to a backend service written in Python/Flask to collect data from a MongoDB.
+It connects to a backend service written in Python/Flask to collect data from a MongoDB. (https://github.com/sorasimuon/Service_Expenses)
+
+Live Preview: https://sorasimuon.github.io/Expenses/
 
 ## Project status
 
 Wallet is the first functionnality that is part of my bigger project "Happy Suite". New functionalities will developped later on for completing the suite.
 
-Live Preview: https://sorasimuon.github.io/Expenses/
+
 
 ## Stack
 Javascript
