@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 
-import { Bar } from "react-chartjs-2";
+import { Bar, Line } from "react-chartjs-2";
 import Loader from "./Loader";
 import { useSelector } from "react-redux";
 
@@ -104,6 +104,7 @@ function BarChart() {
             displayFormats: {
               day: "MMM D",
             },
+            unit: "day",
           },
           scaleLabel: {
             display: true,
@@ -158,19 +159,19 @@ function BarChart() {
     setData({
       datasets: [
         {
-          label: "Expenses",
-          data: dataExpenses,
-          backgroundColor: deepOrange[200],
-          borderColor: deepOrange[700],
-          pointBorderColor: deepOrange[700],
-          borderWidth: 1,
-        },
-        {
           label: "Earnings",
           data: dataEarnings,
           backgroundColor: teal[300],
           borderColor: teal[700],
           pointBorderColor: teal[700],
+          borderWidth: 1,
+        },
+        {
+          label: "Expenses",
+          data: dataExpenses,
+          backgroundColor: deepOrange[200],
+          borderColor: deepOrange[700],
+          pointBorderColor: deepOrange[700],
           borderWidth: 1,
         },
       ],
