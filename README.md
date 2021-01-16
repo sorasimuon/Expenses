@@ -28,14 +28,14 @@ Wallet page:
 
 
 Data loaded from backend service Expenses (https://github.com/sorasimuon/Service_Expenses):
-![plot](./Capture-SignUp.PNG)
+![plot](./Capture-Wallet+graphs.PNG)
 
 
 
 New Expense modal:
-![plot](./Capture-Wallet.PNG)
+![plot](./Capture-Wallet+NewExpense.PNG)
 
 
 
 New Earnings modal:
-![plot](./Capture-Wallet.PNG)
+![plot](./Capture-Wallet+NewEarnings.PNG)
