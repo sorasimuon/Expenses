@@ -2,7 +2,6 @@
   display: grid;
   grid-template-rows: auto [row1] auto [row2] 1fr [row3];
   grid-template-columns: 1fr [col1];
-  justify-items: center;
   position: fixed;
   left: 0;
   top: 0;

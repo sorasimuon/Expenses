@@ -112,7 +112,7 @@ function SignUp() {
         if (response.status === 201) {
           console.log(response.data);
           dispatch(setUser(response.data));
-          history.push("/wallet");
+          history.push("/Expenses/wallet");
         }
       }
     } catch (error) {
@@ -155,7 +155,7 @@ function SignUp() {
       {/* <div className={styles.carroussel__container}></div> */}
 
       <form className={styles.login__container}>
-        <Link to="/login">
+        <Link to="/Expenses/login">
           <img
             src={HsWhite}
             className={`${styles.logo1} ${classes.space}`}

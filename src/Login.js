@@ -127,7 +127,7 @@ function Login() {
         if (!response.error) {
           console.log("connected");
           dispatch(setUser(response.data));
-          history.push("/wallet");
+          history.push("/Expenses/wallet");
         } else {
           console.log(response.error);
         }
@@ -318,7 +318,7 @@ function Login() {
         </Button>
         <p className={styles.newAccount}>
           Don't have an account?{" "}
-          <Link className={classes.newAccountButton} to="/signup">
+          <Link className={classes.newAccountButton} to="/Expenses/signup">
             Sign Up
           </Link>
         </p>

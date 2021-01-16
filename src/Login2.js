@@ -24,7 +24,7 @@ function Login2() {
     if (!response.error) {
       console.log("Perfect");
       dispatch(setUser(response.data));
-      history.push("/wallet");
+      history.push("/Expenses/wallet");
     }
   };
   return (

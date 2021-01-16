@@ -105,7 +105,7 @@ export default function MenuUser() {
       email: "",
     };
     dispatch(setUser(credentials));
-    history.push("/");
+    history.push("/Expenses/");
   };
 
   // return focus to the button when we transitioned from !open -> open

@@ -7,6 +7,7 @@
       display: grid;
       grid-template-rows: minmax(102px, auto) [row1] 1fr [row2] 1fr [row3];
       grid-template-columns: repeat(2, 1fr);
+      justify-self: center;
       gap: 30px 20px;
       padding: 10px;
       max-width: 1920px;

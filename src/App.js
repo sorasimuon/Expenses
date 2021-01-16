@@ -13,7 +13,6 @@ import isEmpty from "is-empty";
 import Login from "./Login";
 import SignUp from "./SignUp";
 import Wallet from "./Wallet";
-import BarChart from "./BarChart";
 import Login2 from "./Login2";
 
 function App() {
@@ -21,18 +20,18 @@ function App() {
   return (
     <Router>
       <Switch>
-        <Route path="/login">
+        <Route path="/Expenses/login">
           <Login />
         </Route>
-        <Route path="/signup">
+        <Route path="/Expenses/signup">
           <SignUp />
         </Route>
         {!isEmpty(userId) ? (
-          <Route path="/wallet" component={Wallet} />
+          <Route path="/Expenses/wallet" component={Wallet} />
         ) : (
-          <Redirect to="/login" />
+          <Redirect to="/Expenses/login" />
         )}
-        <Route path="/">
+        <Route path="/Expenses/">
           <Login />
         </Route>
       </Switch>
