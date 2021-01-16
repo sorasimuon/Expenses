@@ -112,6 +112,7 @@ function BarChart() {
             fontColor: "rgb(255,255,255)",
           },
           distribution: "linear",
+          bounds: "ticks",
         },
       ],
     },
