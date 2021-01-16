@@ -4,7 +4,10 @@ A front end aplication where the user can access and tracks his daily expenses.
 It connects to a backend service written in Python/Flask to collect data from a MongoDB.
 
 ### Stack
-Javascript - ReactJS - Redux for state data store  - Material Ui - Python/Flask
+Javascript
+Framework : Reactjs
+Middleware : Redux for state data store
+GUI library: Material UI, Chartjs
 
 ### Presentation
 
@@ -28,6 +31,7 @@ Wallet page:
 
 
 Data loaded from backend service Expenses (https://github.com/sorasimuon/Service_Expenses):
+Chartjs library used for plotting data
 ![plot](./Capture-Wallet+Data.PNG)
 
 
