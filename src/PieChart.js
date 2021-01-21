@@ -107,13 +107,19 @@ function PieChart() {
     let data = [];
 
     arr.forEach((expense) => {
-      expense.categories.forEach((category) => {
-        if (tempObj[category]) {
-          tempObj[category] += expense.amount;
-        } else {
-          tempObj[category] = expense.amount;
-        }
-      });
+      if (expense.categories) {
+        expense.categories.forEach((category) => {
+          if (tempObj[category]) {
+            tempObj[category] += expense.amount;
+          } else {
+            tempObj[category] = expense.amount;
+          }
+        });
+      } else if (tempObj["other"]) {
+        tempObj["other"] += expense.amount;
+      } else {
+        tempObj["other"] = expense.amount;
+      }
     });
 
     for (const [key, value] of Object.entries(tempObj)) {
