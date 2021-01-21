@@ -52,10 +52,8 @@ function WalletExpenseGrid() {
 
   // columns
   const columns = [
-    { field: "id", headerName: "ID", width: 300 },
-    { field: "userId", headerName: "USER ID", width: 300 },
-    { field: "date", headerName: "DATE", width: 300 },
     { field: "name", headerName: "NAME", width: 300 },
+    { field: "date", headerName: "DATE", width: 300 },
     { field: "categories", headerName: "CATEGORIES", width: 300 },
     { field: "amount", headerName: "AMOUNT", width: 300 },
     { field: "currency", headerName: "CURRENCY", width: 300 },
