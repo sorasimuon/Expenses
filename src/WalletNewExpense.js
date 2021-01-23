@@ -8,6 +8,7 @@ import {
 } from "./features/expensesSlice";
 import { v4 as uuidv4 } from "uuid";
 import isEmpty from "is-empty";
+import moment from "moment";
 
 import { makeStyles } from "@material-ui/core";
 import Modal from "@material-ui/core/Modal";
@@ -93,6 +94,18 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       backgroundColor: deepOrange[800],
     },
+    "&:focus": {
+      outline: "none",
+    },
+  },
+  submitButtonDisabled: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: grey[300],
+    color: "white",
+    justifySelf: "end",
+    borderRadius: "4px",
   },
   cancelButton: {
     color: grey[500],
@@ -100,6 +113,9 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "4px",
     "&:hover": {
       color: grey[800],
+    },
+    "&:focus": {
+      outline: "none",
     },
   },
   textField: {
@@ -117,6 +133,9 @@ const useStyles = makeStyles((theme) => ({
     height: "auto",
     "&:hover": {
       backgroundColor: deepOrange[300],
+    },
+    "&:focus": {
+      outline: "none",
     },
   },
   rowBox: {
@@ -186,11 +205,12 @@ function WalletNewExpense() {
   const [name, setName] = useState();
   const [date, setDate] = useState();
   const [categoryList, setCategoryList] = useState([]);
-  const [category, setCategory] = useState(listCategory[0]);
+  const [category, setCategory] = useState();
   const [amount, setAmount] = useState(0);
-  const [currency, setCurrency] = useState(listCurrencies[0]);
-  const [type, setType] = useState(typeList[0]);
-  const [sourceType, setSourceType] = useState(sourceTypeList[0]);
+  const [currency, setCurrency] = useState();
+  const [type, setType] = useState();
+  const [sourceType, setSourceType] = useState();
+  const [disableButton, setDisableButton] = useState(true);
 
   //useSelector
   const userId = useSelector((state) => state.user.userId);
@@ -209,6 +229,7 @@ function WalletNewExpense() {
   };
 
   const handleOpen = () => {
+    setDate(moment().format("YYYY-MM-DD"));
     setOpen(true);
   };
   const handleClose = () => {
@@ -222,6 +243,7 @@ function WalletNewExpense() {
     setType();
     setSourceType();
     setOpen(false);
+    setDisableButton(true);
   };
 
   const addNewExpense = async (e) => {
@@ -232,7 +254,8 @@ function WalletNewExpense() {
     newExpense.type = type;
     newExpense.source_type = sourceType;
     newExpense.date = parseInt(Date.parse(date));
-    newExpense.categories = categoryList;
+
+    newExpense.categories = !isEmpty(categoryList) ? categoryList : ["Other"];
     newExpense.name = name;
     newExpense.amount = parseInt(amount);
     newExpense.currency = currency;
@@ -250,6 +273,17 @@ function WalletNewExpense() {
 
     handleClose();
   };
+
+  useEffect(() => {
+    if (
+      !isEmpty(name) &&
+      !isEmpty(date) &&
+      !isEmpty(amount) &&
+      !isEmpty(currency)
+    ) {
+      setDisableButton(false);
+    }
+  }, [name, date, amount, currency]);
 
   useEffect(() => {}, [categoryList]);
 
@@ -287,6 +321,7 @@ function WalletNewExpense() {
                 className={classes.textField}
                 type="date"
                 label="Date"
+                value={date}
                 onChange={(e) => setDate(e.target.value)}
                 InputLabelProps={{
                   shrink: true,
@@ -299,7 +334,7 @@ function WalletNewExpense() {
                   label="Category"
                   className={classes.textField}
                   style={{ marginRight: 10, marginBottom: 0 }}
-                  value={category ? category : listCategory[0]}
+                  value={category ? category : ""}
                   onChange={(e) => setCategory(e.target.value)}
                 >
                   {listCategory.map((cat) => (
@@ -336,7 +371,7 @@ function WalletNewExpense() {
                 select
                 type="text"
                 label="Currency"
-                value={currency ? currency : listCurrencies[0].value}
+                value={currency ? currency : ""}
                 className={classes.textField}
                 onChange={(e) => setCurrency(e.target.value)}
               >
@@ -350,7 +385,7 @@ function WalletNewExpense() {
                 select
                 type="text"
                 label="Type"
-                value={type ? type : typeList[0]}
+                value={type ? type : ""}
                 className={classes.textField}
                 onChange={(e) => setType(e.target.value)}
               >
@@ -364,7 +399,7 @@ function WalletNewExpense() {
                 select
                 type="text"
                 label="Source Type"
-                value={sourceType ? sourceType : sourceTypeList[0]}
+                value={sourceType ? sourceType : ""}
                 className={classes.textField}
                 onChange={(e) => setSourceType(e.target.value)}
               >
@@ -383,7 +418,12 @@ function WalletNewExpense() {
                   CANCEL
                 </Button>
                 <Button
-                  className={`${classes.submitButton} ${classes.alignRight}`}
+                  disabled={disableButton}
+                  className={`${
+                    disableButton
+                      ? classes.submitButtonDisabled
+                      : classes.submitButton
+                  } ${classes.alignRight}`}
                   type="submit"
                   onClick={(e) => addNewExpense(e)}
                 >

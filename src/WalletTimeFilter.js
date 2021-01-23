@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
+import moment from "moment";
 
 // Redux Import
 import { useDispatch, useSelector } from "react-redux";
@@ -15,18 +16,13 @@ import {
   setSubEarnings,
 } from "./features/earningsSlice";
 
-import WalletNewExpense from "./WalletNewExpense";
-
 // Styling import
 import styles from "./WalletTimeFilter.module.css";
 import { makeStyles } from "@material-ui/core";
-
 import TextField from "@material-ui/core/TextField";
-import ButtonGroup from "@material-ui/core/ButtonGroup";
 import Button from "@material-ui/core/Button";
 import { teal, grey, lightBlue } from "@material-ui/core/colors";
 import RefreshIcon from "@material-ui/icons/Refresh";
-import IconButton from "@material-ui/core/IconButton";
 
 const useStyles = makeStyles((theme) => ({
   datePicker: {
@@ -41,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    fontWeight: "bold",
     backgroundColor: teal[500],
     color: "white",
     borderRadius: "4px",
@@ -91,11 +88,7 @@ function WalletTimeFilter() {
   const classesTextFieldLabel = useStyleTextFieldLabel();
   const classesTextField = useStyleTextField();
 
-  // useRef variables
-  const dateFromRef = useRef(null);
-  const dateToRef = useRef(null);
-
-  //  useState fro window innerWidth
+  //  useState for window innerWidth
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const updateWindowWidth = () => {
     setWindowWidth(window.innerWidth);
@@ -113,23 +106,28 @@ function WalletTimeFilter() {
 
   // Selector of redux data store
   const expenses = useSelector((state) => state.expenses.expenses);
-  const subExpenses = useSelector((state) => state.expenses.subExpenses);
   const earnings = useSelector((state) => state.earnings.earnings);
-  const subEarnings = useSelector((state) => state.earnings.subEarnings);
+  const dateFromSelector = useSelector((state) => state.expenses.from);
+  const dateToSelector = useSelector((state) => state.expenses.to);
 
+  // useState
+  const [from, setFrom] = useState(moment().format("YYYY-MM-DD"));
+  const [to, setTo] = useState(moment().format("YYYY-MM-DD"));
   // Functions
 
-  const selectData = (from, to) => {
+  const refreshData = () => {
     // convert date from String to Date
-    from = new Date(from);
-    to = new Date(to);
+    const fromDate = new Date(from);
+    const toDate = new Date(to);
     const subExp = [];
     const subEarn = [];
+
+    console.log(fromDate + toDate);
 
     // select data of expenses.expenses Slice between from and to
     expenses.forEach((expense) => {
       let expenseDate = new Date(expense.date);
-      if (expenseDate >= from && expenseDate <= to) {
+      if (expenseDate >= fromDate && expenseDate <= toDate) {
         subExp.push(expense);
       }
     });
@@ -139,7 +137,7 @@ function WalletTimeFilter() {
     // select data of earnings.earnings Slice between from and to
     earnings.forEach((earning) => {
       let earningDate = new Date(earning.date);
-      if (earningDate >= from && earningDate <= to) {
+      if (earningDate >= fromDate && earningDate <= toDate) {
         subEarn.push(earning);
       }
     });
@@ -147,34 +145,39 @@ function WalletTimeFilter() {
     dispatch(setSubEarnings(subEarn));
   };
 
-  const dataRefresh = (e) => {
+  // Refresh subExpenses and subEarnings after changing the dates
+  const refresh = (e) => {
     e.preventDefault();
 
-    const from = dateFromRef.current.value;
-    const to = dateToRef.current.value;
-
-    // save date to Redux store
+    // Update from and to in the Redux datastore
     dispatch(setDateFrom(from));
     dispatch(setDateTo(to));
     dispatch(setDateFromEarnings(from));
     dispatch(setDateToEarnings(to));
 
-    selectData(from, to);
+    refreshData();
   };
 
+  // This useEffect is used for updating subExpenses and subEarnings in the Redux Store when the user creates a new earning or expense
   useEffect(() => {
-    const from = dateFromRef.current.value;
-    const to = dateToRef.current.value;
-    selectData(from, to);
+    console.log("refresh data");
+    refreshData();
   }, [expenses, earnings]);
+
+  // Initial useEffect in order to set the state of from and to
+  useEffect(() => {
+    dispatch(setDateFrom(from));
+    dispatch(setDateTo(to));
+    dispatch(setDateFromEarnings(from));
+    dispatch(setDateToEarnings(to));
+  }, []);
 
   return (
     <div className={styles.box}>
       <TextField
-        inputRef={dateFromRef}
         label="From"
         type="date"
-        defaultValue="1970-01-01"
+        value={from}
         InputProps={{
           classes: classesTextField,
         }}
@@ -182,12 +185,12 @@ function WalletTimeFilter() {
           classes: classesTextFieldLabel,
         }}
         className={classes.datePicker}
+        onChange={(e) => setFrom(e.target.value)}
       />
       <TextField
-        inputRef={dateToRef}
         label="To"
         type="date"
-        defaultValue="1970-01-01"
+        value={to}
         InputProps={{
           classes: classesTextField,
         }}
@@ -195,24 +198,12 @@ function WalletTimeFilter() {
           classes: classesTextFieldLabel,
         }}
         className={classes.datePicker}
+        onChange={(e) => setTo(e.target.value)}
       />
-
-      {windowWidth > 520 ? (
-        <Button
-          className={classes.refreshButton}
-          onClick={(e) => dataRefresh(e)}
-        >
-          <RefreshIcon className={classes.refreshIcon} />
-          Refresh
-        </Button>
-      ) : (
-        <IconButton
-          className={classes.refreshButton}
-          onClick={(e) => dataRefresh(e)}
-        >
-          <RefreshIcon />
-        </IconButton>
-      )}
+      <Button className={classes.refreshButton} onClick={(e) => refresh(e)}>
+        <RefreshIcon className={classes.refreshIcon} />
+        {windowWidth > 480 ? "Refresh" : ""}
+      </Button>
     </div>
   );
 }

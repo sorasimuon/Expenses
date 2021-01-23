@@ -113,11 +113,19 @@ function WalletNavBar() {
       <Toolbar className={classes.toolBar}>
         <div className={classes.rowSection}>
           <img src={walletLogo} alt="logo" className={classes.logo} />
-          {windowWidth > 460 && <h1 className={classes.titleLogo}>Wallet</h1>}
+          {windowWidth > 480 && <h1 className={classes.titleLogo}>Wallet</h1>}
         </div>
         <div className={classes.rowSection}>
-          <h2 className={classes.date}>{dateFromSelector}</h2>
-          <h2 className={classes.date}>{dateToSelector}</h2>
+          <h2 className={classes.date}>
+            {new Date(dateFromSelector).getDate()}-
+            {new Date(dateFromSelector).getMonth() + 1}-
+            {new Date(dateFromSelector).getFullYear()}
+          </h2>
+          <h2 className={classes.date}>
+            {new Date(dateFromSelector).getDate()}-
+            {new Date(dateFromSelector).getMonth() + 1}-
+            {new Date(dateFromSelector).getFullYear()}
+          </h2>
         </div>
         <div className={styles.gridMenu}>
           {/* <MenuTheme />

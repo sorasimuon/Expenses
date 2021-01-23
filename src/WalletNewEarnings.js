@@ -8,12 +8,12 @@ import {
 } from "./features/expensesSlice";
 import { v4 as uuidv4 } from "uuid";
 import isEmpty from "is-empty";
+import moment from "moment";
 
 import { makeStyles } from "@material-ui/core";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
-import { CenterFocusStrong, FullscreenExit } from "@material-ui/icons";
 import Button from "@material-ui/core/Button";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
 import AddIcon from "@material-ui/icons/Add";
@@ -25,8 +25,6 @@ import {
   deepPurple,
 } from "@material-ui/core/colors";
 import TextField from "@material-ui/core/TextField";
-import InputLabel from "@material-ui/core/InputLabel";
-import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import { IconFlagUS, IconFlagEU, IconFlagUK } from "material-ui-flags";
 
@@ -93,6 +91,15 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       backgroundColor: teal[800],
     },
+  },
+  submitButtonDisabled: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: grey[300],
+    color: "white",
+    justifySelf: "end",
+    borderRadius: "4px",
   },
   cancelButton: {
     color: grey[500],
@@ -174,12 +181,13 @@ function WalletNewEarnings() {
   // useState
   const [open, setOpen] = useState(false);
   const [from, setFrom] = useState();
-  const [date, setDate] = useState();
+  const [date, setDate] = useState(moment().format("YYYY-MM-DD"));
   const [categoryList, setCategoryList] = useState([]);
   const [amount, setAmount] = useState(0);
-  const [currency, setCurrency] = useState(listCurrencies[0]);
-  const [type, setType] = useState(typeList[0]);
-  const [sourceType, setSourceType] = useState(bankList[0]);
+  const [currency, setCurrency] = useState();
+  const [type, setType] = useState();
+  const [sourceType, setSourceType] = useState();
+  const [disableButton, setDisableButton] = useState(true);
 
   //useSelector
   const userId = useSelector((state) => state.user.userId);
@@ -187,29 +195,20 @@ function WalletNewEarnings() {
   // useDispatch
   const dispatch = useDispatch();
 
-  const handleCategory = (val) => {
-    if (!isEmpty(val)) {
-      if (!categoryList.includes(val)) {
-        const copyCategoryList = categoryList.slice();
-        copyCategoryList.push(val);
-        setCategoryList(copyCategoryList);
-      }
-    }
-  };
-
   const handleOpen = () => {
+    setDate(moment().format("YYYY-MM-DD"));
     setOpen(true);
   };
   const handleClose = () => {
     // Reinitialise the state
     setFrom();
     setDate();
-    setCategoryList([]);
     setAmount();
-    setCurrency();
+    setCurrency("");
     setType();
     setSourceType();
     setOpen(false);
+    setDisableButton(true);
   };
 
   const addNewEarnings = async (e) => {
@@ -220,9 +219,10 @@ function WalletNewEarnings() {
     newExpense.type = type;
     newExpense.source_type = sourceType;
     newExpense.date = parseInt(Date.parse(date));
-    newExpense.from = from;
+    newExpense.name = from;
     newExpense.amount = parseInt(amount);
     newExpense.currency = currency;
+    console.log(newExpense);
 
     // Push to Database
     const response = await axiosExpenses.post("/earning", newExpense);
@@ -238,7 +238,16 @@ function WalletNewEarnings() {
     handleClose();
   };
 
-  useEffect(() => {}, [categoryList]);
+  useEffect(() => {
+    if (
+      !isEmpty(from) &&
+      !isEmpty(date) &&
+      !isEmpty(amount) &&
+      !isEmpty(currency)
+    ) {
+      setDisableButton(false);
+    }
+  }, [from, date, amount, currency]);
 
   return (
     <React.Fragment>
@@ -274,19 +283,12 @@ function WalletNewEarnings() {
                 className={classes.textField}
                 type="date"
                 label="Date"
+                value={date}
                 onChange={(e) => setDate(e.target.value)}
                 InputLabelProps={{
                   shrink: true,
                 }}
               />
-              <div className={classes.categoryContainer}>
-                {categoryList.map((category) => (
-                  <p key={uuidv4()} className={classes.category}>
-                    {category}
-                  </p>
-                ))}
-              </div>
-
               <TextField
                 required
                 type="number"
@@ -299,7 +301,7 @@ function WalletNewEarnings() {
                 select
                 type="text"
                 label="Currency"
-                value={currency ? currency : listCurrencies[0].value}
+                value={currency ? currency : ""}
                 className={classes.textField}
                 onChange={(e) => setCurrency(e.target.value)}
               >
@@ -313,7 +315,7 @@ function WalletNewEarnings() {
                 select
                 type="text"
                 label="Type"
-                value={type ? type : typeList[0]}
+                value={type ? type : ""}
                 className={classes.textField}
                 onChange={(e) => setType(e.target.value)}
               >
@@ -327,7 +329,7 @@ function WalletNewEarnings() {
                 select
                 type="text"
                 label="Bank"
-                value={sourceType ? sourceType : bankList[0]}
+                value={sourceType ? sourceType : ""}
                 className={classes.textField}
                 onChange={(e) => setSourceType(e.target.value)}
               >
@@ -346,7 +348,12 @@ function WalletNewEarnings() {
                   CANCEL
                 </Button>
                 <Button
-                  className={`${classes.submitButton} ${classes.alignRight}`}
+                  disabled={disableButton}
+                  className={`${
+                    disableButton
+                      ? classes.submitButtonDisabled
+                      : classes.submitButton
+                  } ${classes.alignRight}`}
                   type="submit"
                   onClick={(e) => addNewEarnings(e)}
                 >

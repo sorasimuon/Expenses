@@ -1,10 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
+import moment from "moment";
 
 const initialState = {
   earnings: [],
   subEarnings: [],
-  dateFrom: "1970-01-01",
-  dateTo: "1970-01-01",
+  dateFrom: "",
+  dateTo: "",
   reload: false,
   alertAdd: "",
 };
