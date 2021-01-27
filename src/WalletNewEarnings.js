@@ -222,7 +222,6 @@ function WalletNewEarnings() {
     newExpense.name = from;
     newExpense.amount = parseInt(amount);
     newExpense.currency = currency;
-    console.log(newExpense);
 
     // Push to Database
     const response = await axiosExpenses.post("/earning", newExpense);

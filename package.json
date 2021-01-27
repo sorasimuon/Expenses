@@ -1,6 +1,5 @@
 {
   "name": "expenses",
-  "homepage": "https://sorasimuon.github.io/Expenses/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

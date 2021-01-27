@@ -108,9 +108,7 @@ function SignUp() {
 
         const response = await axios.post("/signup", credentials);
 
-        console.log(response);
         if (response.status === 201) {
-          console.log(response.data);
           dispatch(setUser(response.data));
           history.push("/Expenses/wallet");
         }

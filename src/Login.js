@@ -15,12 +15,14 @@ import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
-import { lightBlue } from "@material-ui/core/colors";
+import { lightBlue, deepOrange } from "@material-ui/core/colors";
 import walletLogo from "./img/wallet.png";
 import messengerLogo from "./img/messenger.png";
 import HsWhite from "./img/Hs-White.png";
 import Slide from "@material-ui/core/Slide";
 import ErrorIcon from "@material-ui/icons/Error";
+import Drawer from "@material-ui/core/Drawer";
+import HelpIcon from "@material-ui/icons/Help";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 // Declre styles to override default component styling
@@ -71,6 +73,18 @@ const useStyles = makeStyles((theme) => ({
   errorIcon: {
     color: "red",
   },
+  login__testButton: {
+    backgroundColor: "inherit",
+    "&:hover": {
+      backgroundColor: "inherit",
+    },
+  },
+  login__testIcon: {
+    color: deepOrange[300],
+    "&:hover": {
+      color: deepOrange[100],
+    },
+  },
 }));
 
 const useStylesTextField = makeStyles((theme) => ({
@@ -105,11 +119,17 @@ function Login() {
   const [toolSelected, setToolSelected] = useState(false);
   const [errorMessages, setErrorMessages] = useState([]);
   const [disabledSignIn, setDisableSignIn] = useState(false);
+  const [openDrawer, setOpenDrawer] = useState(false);
   const history = useHistory();
 
   const userId = useSelector((state) => state.user.userId);
 
   const mailFormat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
+  const handleOpenDrawer = (e, value) => {
+    e.preventDefault();
+    setOpenDrawer(value);
+  };
 
   const signIn = async (e) => {
     e.preventDefault();
@@ -125,7 +145,6 @@ function Login() {
 
         const response = await axios.post("/signin", credentials);
         if (!response.error) {
-          console.log("connected");
           dispatch(setUser(response.data));
           history.push("/Expenses/wallet");
         } else {
@@ -133,8 +152,13 @@ function Login() {
         }
       }
     } catch (error) {
+      console.log(error);
       if (error.toString() == "Error: Network Error") {
         setErrorMessages(["Error connection to server"]);
+      } else if (
+        error.toString() == "Error: Request failed with status code 401"
+      ) {
+        setErrorMessages(["Error : this user does not exist"]);
       } else {
         setErrorMessages([error.response]);
       }
@@ -196,12 +220,10 @@ function Login() {
     };
 
     window.addEventListener("resize", updateWidth);
-    console.log(isMounted);
     return () => {
       isMounted = false;
 
       window.removeEventListener("resize", updateWidth);
-      console.log(isMounted);
     };
   }, []);
 
@@ -322,6 +344,22 @@ function Login() {
             Sign Up
           </Link>
         </p>
+
+        <Button
+          className={`${styles.login__elementPosition} ${classes.login__testIcon} ${classes.login__testButton}`}
+          onClick={(e) => handleOpenDrawer(e, !openDrawer)}
+        >
+          Test <HelpIcon />
+        </Button>
+        <Drawer
+          anchor={"bottom"}
+          open={openDrawer}
+          onClose={(e) => handleOpenDrawer(e, !openDrawer)}
+        >
+          <p>TEST :</p>
+          <p>email: user1@email.com</p>
+          <p>pwd: test</p>
+        </Drawer>
       </form>
     </div>
   );

@@ -109,14 +109,10 @@ function Wallet() {
       } catch (error) {
         switch (error.response.status) {
           case 400:
-            console.log("Result not found for this user");
             setErrorEarnings("No data ");
-
+            console.log("No data retrieved for this user");
             break;
           default:
-            console.log(
-              "Oops, Somthing wrong happened during request Earnings"
-            );
             setErrorEarnings("Error on request");
         }
       }

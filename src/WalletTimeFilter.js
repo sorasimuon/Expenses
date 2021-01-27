@@ -122,8 +122,6 @@ function WalletTimeFilter() {
     const subExp = [];
     const subEarn = [];
 
-    console.log(fromDate + toDate);
-
     // select data of expenses.expenses Slice between from and to
     expenses.forEach((expense) => {
       let expenseDate = new Date(expense.date);
@@ -160,7 +158,6 @@ function WalletTimeFilter() {
 
   // This useEffect is used for updating subExpenses and subEarnings in the Redux Store when the user creates a new earning or expense
   useEffect(() => {
-    console.log("refresh data");
     refreshData();
   }, [expenses, earnings]);
 
