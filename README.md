@@ -4,7 +4,13 @@ A front end aplication "Wallet" where the user can access and tracks his daily e
 
 It connects to a backend service written in Python/Flask to collect data from a MongoDB. (https://github.com/sorasimuon/Service_Expenses)
 
-Live Preview: https://expenses-cd8fe.firebaseapp.com/
+Live Preview: https://expenses-cd8fe.firebaseapp.com/ 
+
+Credential tests: 
+
+username : "user1@email.com"
+
+password: "test"
 
 ## Project status
 
