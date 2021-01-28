@@ -31,8 +31,6 @@ Middleware : Redux
 
 GUI library: Material UI, Chartjs
 
-Testing: testing-library/react
-
 ## Visuals
 
 SignIn page: 
