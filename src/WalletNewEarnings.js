@@ -188,12 +188,26 @@ function WalletNewEarnings() {
   const [type, setType] = useState();
   const [sourceType, setSourceType] = useState();
   const [disableButton, setDisableButton] = useState(true);
+  const [errorAmountFormat, setErrorAmountFormat] = useState(false);
 
   //useSelector
   const userId = useSelector((state) => state.user.userId);
 
   // useDispatch
   const dispatch = useDispatch();
+
+  const handleAmount = (val) => {
+    const numberFormat = /^[-+]?[0-9]*\.?[0-9]*$/;
+
+    if (!val.match(numberFormat)) {
+      val = "";
+      setErrorAmountFormat(true);
+    } else {
+      val = parseFloat(val);
+      setErrorAmountFormat(false);
+    }
+    setAmount(val);
+  };
 
   const handleOpen = () => {
     setDate(moment().format("YYYY-MM-DD"));
@@ -209,6 +223,7 @@ function WalletNewEarnings() {
     setSourceType();
     setOpen(false);
     setDisableButton(true);
+    setErrorAmountFormat(false);
   };
 
   const addNewEarnings = async (e) => {
@@ -242,11 +257,14 @@ function WalletNewEarnings() {
       !isEmpty(from) &&
       !isEmpty(date) &&
       !isEmpty(amount) &&
+      errorAmountFormat === false &&
       !isEmpty(currency)
     ) {
       setDisableButton(false);
+    } else {
+      setDisableButton(true);
     }
-  }, [from, date, amount, currency]);
+  }, [from, date, amount, currency, errorAmountFormat]);
 
   return (
     <React.Fragment>
@@ -289,11 +307,13 @@ function WalletNewEarnings() {
                 }}
               />
               <TextField
+                error={errorAmountFormat}
+                helperText={errorAmountFormat ? "Wrong number format" : ""}
                 required
-                type="number"
+                type="text"
                 label="Amount"
                 className={classes.textField}
-                onChange={(e) => setAmount(e.target.value)}
+                onChange={(e) => handleAmount(e.target.value)}
               />
               <TextField
                 required

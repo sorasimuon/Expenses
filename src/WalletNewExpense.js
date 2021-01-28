@@ -211,6 +211,7 @@ function WalletNewExpense() {
   const [type, setType] = useState();
   const [sourceType, setSourceType] = useState();
   const [disableButton, setDisableButton] = useState(true);
+  const [errorAmountFormat, setErrorAmountFormat] = useState(false);
 
   //useSelector
   const userId = useSelector((state) => state.user.userId);
@@ -226,6 +227,19 @@ function WalletNewExpense() {
         setCategoryList(copyCategoryList);
       }
     }
+  };
+
+  const handleAmount = (val) => {
+    const numberFormat = /^[-+]?[0-9]*\.?[0-9]+$/;
+
+    if (!val.match(numberFormat)) {
+      val = "";
+      setErrorAmountFormat(true);
+    } else {
+      val = parseFloat(val);
+      setErrorAmountFormat(false);
+    }
+    setAmount(val);
   };
 
   const handleOpen = () => {
@@ -244,6 +258,7 @@ function WalletNewExpense() {
     setSourceType();
     setOpen(false);
     setDisableButton(true);
+    setErrorAmountFormat(false);
   };
 
   const addNewExpense = async (e) => {
@@ -257,7 +272,7 @@ function WalletNewExpense() {
 
     newExpense.categories = !isEmpty(categoryList) ? categoryList : ["Other"];
     newExpense.name = name;
-    newExpense.amount = parseInt(amount);
+    newExpense.amount = parseFloat(amount);
     newExpense.currency = currency;
 
     // Push to Database
@@ -279,11 +294,14 @@ function WalletNewExpense() {
       !isEmpty(name) &&
       !isEmpty(date) &&
       !isEmpty(amount) &&
+      errorAmountFormat === false &&
       !isEmpty(currency)
     ) {
       setDisableButton(false);
+    } else {
+      setDisableButton(true);
     }
-  }, [name, date, amount, currency]);
+  }, [name, date, amount, currency, errorAmountFormat]);
 
   useEffect(() => {}, [categoryList]);
 
@@ -360,11 +378,13 @@ function WalletNewExpense() {
               </div>
 
               <TextField
+                error={errorAmountFormat}
+                helperText={errorAmountFormat ? "Wrong number format" : ""}
                 required
-                type="number"
+                type="text"
                 label="Amount"
                 className={classes.textField}
-                onChange={(e) => setAmount(e.target.value)}
+                onChange={(e) => handleAmount(e.target.value)}
               />
               <TextField
                 required
