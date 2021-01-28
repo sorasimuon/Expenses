@@ -10,6 +10,12 @@ Live Preview: https://expenses-cd8fe.firebaseapp.com/
 
 Wallet is the first functionnality that is part of my bigger project "Happy Suite". New functionalities will developped later on for completing the suite.
 
+Next steps:
+  
+  - The user wants to login and keeps a session opened (maybe using JWT)
+  - The user wants to add several expenses or earnings at the same time (upload JSON, csv, Excel file)
+  - The user wants a recap table for the earnings
+
 ## Stack
 Javascript
 
