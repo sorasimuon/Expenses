@@ -4,20 +4,30 @@ A front end aplication "Wallet" where the user can access and tracks his daily e
 
 It connects to a backend service written in Python/Flask to collect data from a MongoDB. (https://github.com/sorasimuon/Service_Expenses)
 
-Live Preview: https://sorasimuon.github.io/Expenses/
+Live Preview: https://expenses-cd8fe.firebaseapp.com/ 
+
+Credential tests: 
+
+username : "user1@email.com"
+
+password: "test"
 
 ## Project status
 
 Wallet is the first functionnality that is part of my bigger project "Happy Suite". New functionalities will developped later on for completing the suite.
 
-
+Next steps:
+  
+  - The user wants to login and keeps a session opened (maybe using JWT)
+  - The user wants to add several expenses or earnings at the same time (upload JSON, csv, Excel file)
+  - The user wants a recap table for the earnings
 
 ## Stack
 Javascript
 
 Framework : Reactjs
 
-Middleware : Redux for state data store
+Middleware : Redux
 
 GUI library: Material UI, Chartjs
 
@@ -29,9 +39,9 @@ SignIn page:
 
 Credential tests: 
 
-username : "test@email.com"
+username : "user1@email.com"
 
-password: "doudoushi"
+password: "test"
 
 ![plot](./Capture-SignIn.PNG)
 
